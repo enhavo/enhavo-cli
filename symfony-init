@@ -1,0 +1,383 @@
+#!/bin/bash
+
+CONFIG_DIR="$HOME/.symfony-init"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # Default Color
+
+load-config() {
+  configLoaded=0
+  if [[ -f $1 ]]
+  then
+      source $1
+      println-green "config loaded from $1"
+      echo
+      configLoaded=1
+  fi
+}
+
+check-config() {
+  if [ $configLoaded -eq 0 ]; then
+    echo
+    println-red "no config file found."
+    echo
+    read-d "please enter a value for:" "DB_USER" "root" "DB_USER"
+    read-d "please enter a value for:" "DB_PW" "root" "DB_PW"
+    read-d "please enter a value for:" "DB_HOST" "127.0.0.1" "DB_HOST"
+    read-d "please enter a value for:" "DB_PORT" "3306" "DB_PORT"
+    read-d "please enter a value for:" "USER_USERNAME" "admin@enhavo.com" "USER_USERNAME"
+    read-d "please enter a value for:" "USER_PW" "admin123" "USER_PW"
+    read-d "please enter a value for:" "MAILER_FROM" "dev@xq-web.de" "MAILER_FROM"
+    read-d "please enter a value for:" "MAILER_TO" "info@xq-web.de" "MAILER_TO"
+    read-d "please enter a value for:" "MAILER_DELIVERY_ADDRESS" "info@xq-web.de" "MAILER_DELIVERY_ADDRESS"
+    read-d "please enter a value for:" "MAILER_URL" "smtp://user:password@host?encryption=ssl&auth_mode=login" "MAILER_URL"
+
+    configLoaded=1
+
+    create-config
+
+    echo
+  fi
+}
+
+check-env-local() {
+  if [[ ! -f .env.local ]]
+  then
+    println-red ".env.local missing"
+    env-local
+  fi
+
+  source .env.local
+  println-green ".env.local loaded"
+}
+
+create-config() {
+  configCreated=0
+  read-yny "save config to your home directory?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    mkdir -p $CONFIG_DIR
+    echo "mailer_url: $MAILER_URL"
+    cat >$CONFIG_DIR/config <<EOF
+#!/bin/bash
+
+COMMAND="php bin/console"
+if [[ ! -f "./bin/console" ]]
+then
+    COMMAND="php app/console"
+fi
+
+DB_USER="$DB_USER"
+DB_PW="$DB_PW"
+DB_HOST="$DB_HOST"
+DB_PORT="$DB_PORT"
+USER_USERNAME="$USER_USERNAME"
+USER_PW="$USER_PW"
+MAILER_FROM="$MAILER_FROM"
+MAILER_TO="$MAILER_TO"
+MAILER_DELIVERY_ADDRESS="$MAILER_DELIVERY_ADDRESS"
+MAILER_URL="$MAILER_URL"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # Default Color
+EOF
+    load-config $CONFIG_DIR/config
+    println-green "config written to $CONFIG_DIR/config"
+    configCreated=1
+  fi
+
+echo
+}
+
+
+crossroads() {
+  echo 'Choose a task:'
+  echo '[r] reset/fix non working project'
+  echo '[u] update project after git pull'
+  echo '[m] create and execute migrations'
+  echo '[i] initialize freshly installed project'
+  echo '[c] cancel'
+  read -p "type one of the options: [r/u/m/i/c]" -n 1 -r
+  echo
+  echo
+
+  if [[ $REPLY =~ ^[Uu]$ ]]
+  then
+    instructions
+    project-update
+  elif [[ $REPLY =~ ^[Ii]$ ]]
+  then
+    instructions
+    project-init
+  elif [[ $REPLY =~ ^[Mm]$ ]]
+  then
+    instructions
+    project-migrate
+  elif [[ $REPLY =~ ^[Rr]$ ]]
+  then
+    instructions
+    project-reset
+  else
+    echo
+  fi
+  echo
+}
+
+instructions() {
+  println-green "the following routines will guide you through the setup.\nhit enter to execute defaults.\notherwise follow the instructions."
+  println-red "you can always use CTRL+C to abort"
+  echo
+}
+
+project-update() {
+  composer-install
+}
+
+project-init() {
+  env-local
+  composer-install
+  yarn-install
+
+  read-ynn "is this project brandnew?"
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    create-migrations
+    execute-migrations
+  else
+    execute-migrations
+  fi
+
+  dump-routes
+  yarn-encore
+
+
+}
+
+project-migrate() {
+  create-migrations
+  execute-migrations
+  if [ ! $migrationsCreated -eq 1 ] && [ ! $migrationsExecuted -eq 1 ]; then
+    force-update
+  fi
+}
+
+project-reset() {
+  rm-vendor
+  rm-node_modules
+  rm-cache
+  composer-install
+  yarn-install
+  yarn-encore
+  dump-routes
+  drop-db
+  create-db
+  create-migrations
+  execute-migrations
+}
+
+composer-install() {
+  composerInsalled=0
+  read-yny "composer install?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    composer install
+    composerInsalled=1
+  fi
+  echo
+}
+
+yarn-install() {
+  yarnInstalled=0
+  read-yny "yarn install?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    yarn install
+    yarnInstalled=1
+  fi
+  echo
+}
+
+dump-routes() {
+  routesDumped=0
+  read-yny "dump routes?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    yarn routes:dump
+    routesDumped=1
+  fi
+  echo
+}
+
+yarn-encore() {
+  yarnEncored=0
+  read-yny "webpack encore?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    yarn encore dev --progress
+    yarnEncored=1
+  fi
+}
+
+gulp-sass() {
+  read-yny "gulp sass?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    gulp sass
+    return 1
+  fi
+}
+
+assets-install() {
+  assetsInstalled=0
+  read-yny "install assets?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    $COMMAND assets:install
+    assetsInstalled=1
+  fi
+}
+
+env-local() {
+  envLocalWritten=0
+  read-yny "create .env.local?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    read-d "please enter the database name" "DB_NAME" "project_db" "DB_NAME"
+    cat >.env.local <<EOF
+APP_ENV=dev
+APP_DEBUG=true
+DATABASE_URL="mysql://$DB_USER:$DB_PW@$DB_HOST:$DB_PORT/$DB_NAME"
+MAILER_FROM="$MAILER_FROM"
+MAILER_TO="$MAILER_TO"
+MAILER_DELIVERY_ADDRESS="$MAILER_DELIVERY_ADDRESS"
+MAILER_URL="$MAILER_URL"
+
+# START variables created by symfony-init bash script
+SYMFONY_INIT_DB_NAME=$DB_NAME
+# END variables created by symfony-init bash script
+EOF
+    println-green ".env.local written"
+    envLocalWritten=1
+  fi
+
+echo
+}
+
+drop-db() {
+  databaseDropped=0
+  read-yny "drop old database if exists?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    load-db-name
+    mysql -u$DB_USER -p$DB_PW -e "DROP DATABASE IF EXISTS $DB_NAME;"
+    databaseDropped=1
+  fi
+  echo
+}
+
+create-db() {
+  databaseCreated=0
+  read-yny "create database if not exists?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    load-db-name
+    mysql -u$DB_USER -p$DB_PW -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
+    databaseCreated=1
+  fi
+  echo
+}
+
+force-update() {
+  read-yny "do force-update?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    $COMMAND doctrine:schema:update --force
+  fi
+  echo
+}
+
+create-migrations() {
+  migrationsCreated=0
+  read-yny "create migrations?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    $COMMAND doctrine:migrations:diff
+    migrationsCreated=1
+  fi
+  echo
+}
+
+execute-migrations() {
+  migrationsExecuted=0
+  read-yny "execute migrations?"
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    $COMMAND doctrine:migrations:migrate -n -q
+    migrationsExecuted=1
+  fi
+  echo
+}
+
+load-db-name() {
+  if [[ ! -v DB_NAME ]]
+  then
+    if [[ ! -v SYMFONY_INIT_DB_NAME ]]
+    then
+      read-d "Please enter the value for:" "DB_NAME" "project_db" "DB_NAME"
+    else
+      eval "DB_NAME"="'$SYMFONY_INIT_DB_NAME'"
+    fi
+  fi
+}
+
+rm-vendor() {
+  if [[ -d "./vendor" ]]
+  then
+    read-yny "delete vendor directory?"
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+      rm -rf ./vendor
+    fi
+  fi
+}
+
+rm-node_modules() {
+  if [[ -d "./node_modules" ]]
+  then
+    read-yny "delete node_modules directory?"
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+      rm -rf ./node_modules
+    fi
+  fi
+}
+
+rm-cache() {
+  if [[ -d "./var/cache" ]]
+  then
+    read-yny "delete cache directory?"
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+      rm -rf ./var/cache
+    fi
+  fi
+}
+
+println-red() {
+  printf "${RED}$1${NC}\n"
+}
+
+println-green() {
+  printf "${GREEN}$1${NC}\n"
+}
+
+read-yny() {
+  read -p "$1 [y/n](default=y): " -n 1 -r
+  echo
+}
+
+read-ynn() {
+  read -p "$1 [y/n](default=n): " -n 1 -r
+  echo
+}
+
+read-d() {
+  read -r -p "$1 $2 (default=$3): " read_d
+  read_d=${read_d:-$3}
+  eval "$4"="'$read_d'"
+  println-green "value given for $2: $read_d"
+}
+
+goodbye() {
+  println-green "i'm done. good bye."
+  echo
+}
+
+load-config $CONFIG_DIR/config
+check-config
+check-env-local
+crossroads
+goodbye
