@@ -1,5 +1,13 @@
 #!/bin/bash
 
+println-red() {
+  printf "${RED}$1${NC}\n"
+}
+
+println-green() {
+  printf "${GREEN}$1${NC}\n"
+}
+
 if [[ "$1" = "--update" ]]; then
   sudo wget https://raw.githubusercontent.com/indivisualvj/symfony-init/master/symfony-init -O /usr/local/bin/symfony-init && sudo chmod +x /usr/local/bin/symfony-init
   println-green "symfony-init updated"
@@ -341,14 +349,6 @@ rm-cache() {
       rm -rf ./var/cache
     fi
   fi
-}
-
-println-red() {
-  printf "${RED}$1${NC}\n"
-}
-
-println-green() {
-  printf "${GREEN}$1${NC}\n"
 }
 
 read-yny() {
