@@ -130,20 +130,18 @@ instructions() {
 
 project-update() {
   composer-install
+  yarn-install
+  execute-migrations
+  yarn-encore
+  dump-routes
 }
 
 project-init() {
-  env-local
+  check-env-local
   composer-install
   yarn-install
 
-  read-ynn "is this project brandnew?"
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    create-migrations
-    execute-migrations
-  else
-    execute-migrations
-  fi
+  project-migrate
 
   dump-routes
   yarn-encore
@@ -152,8 +150,14 @@ project-init() {
 }
 
 project-migrate() {
-  create-migrations
-  execute-migrations
+
+  read-ynn "is this project brandnew?"
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    create-migrations
+    execute-migrations
+  else
+    execute-migrations
+  fi
   if [ ! $migrationsCreated -eq 1 ] && [ ! $migrationsExecuted -eq 1 ]; then
     force-update
   fi
