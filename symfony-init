@@ -302,7 +302,7 @@ execute-migrations() {
   migrationsExecuted=0
   read-yny "execute migrations?"
   if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-    $COMMAND doctrine:migrations:migrate -n -q
+    $COMMAND doctrine:migrations:migrate -n
     migrationsExecuted=1
   fi
   echo
