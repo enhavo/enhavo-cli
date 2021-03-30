@@ -359,17 +359,17 @@ println-green() {
 }
 
 read-yny() {
-  read -p "$1 [y/n](default=y): " -n 1 -r
+  read -p "$1 [y/n](defaults to Y): " -n 1 -r
   echo
 }
 
 read-ynn() {
-  read -p "$1 [y/n](default=n): " -n 1 -r
+  read -p "$1 [y/n](defaults to N): " -n 1 -r
   echo
 }
 
 read-d() {
-  read -r -p "$1 $2 (default=$3): " read_d
+  read -r -p "$1 $2 (defaults to $3): " read_d
   read_d=${read_d:-$3}
   eval "$4"="'$read_d'"
   println-green "value given for $2: $read_d"
