@@ -57,10 +57,14 @@ check-env-local() {
   if [[ ! -f .env.local ]]; then
     println-red ".env.local missing"
     env-local
+  else
+    envLocalWritten=1
   fi
 
-  source .env.local
-  println-green ".env.local loaded"
+  if [ $envLocalWritten -eq 1 ]; then
+    source .env.local
+    println-green ".env.local loaded"
+  fi
 }
 
 create-config() {
