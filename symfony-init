@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ "$1" = "--update" ]]; then
+  sudo wget https://raw.githubusercontent.com/indivisualvj/symfony-init/master/symfony-init -O /usr/local/bin/symfony-init && sudo chmod +x /usr/local/bin/symfony-init
+  println-green "symfony-init updated"
+  exit 0
+fi
+
 CONFIG_DIR="$HOME/.symfony-init"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -7,12 +13,11 @@ NC='\033[0m' # Default Color
 
 load-config() {
   configLoaded=0
-  if [[ -f $1 ]]
-  then
-      source $1
-      println-green "config loaded from $1"
-      echo
-      configLoaded=1
+  if [[ -f $1 ]]; then
+    source $1
+    println-green "config loaded from $1"
+    echo
+    configLoaded=1
   fi
 }
 
@@ -41,8 +46,7 @@ check-config() {
 }
 
 check-env-local() {
-  if [[ ! -f .env.local ]]
-  then
+  if [[ ! -f .env.local ]]; then
     println-red ".env.local missing"
     env-local
   fi
@@ -85,9 +89,8 @@ EOF
     configCreated=1
   fi
 
-echo
+  echo
 }
-
 
 crossroads() {
   echo 'Choose a task:'
@@ -100,20 +103,16 @@ crossroads() {
   echo
   echo
 
-  if [[ $REPLY =~ ^[Uu]$ ]]
-  then
+  if [[ $REPLY =~ ^[Uu]$ ]]; then
     instructions
     project-update
-  elif [[ $REPLY =~ ^[Ii]$ ]]
-  then
+  elif [[ $REPLY =~ ^[Ii]$ ]]; then
     instructions
     project-init
-  elif [[ $REPLY =~ ^[Mm]$ ]]
-  then
+  elif [[ $REPLY =~ ^[Mm]$ ]]; then
     instructions
     project-migrate
-  elif [[ $REPLY =~ ^[Rr]$ ]]
-  then
+  elif [[ $REPLY =~ ^[Rr]$ ]]; then
     instructions
     project-reset
   else
@@ -145,7 +144,6 @@ project-init() {
 
   dump-routes
   yarn-encore
-
 
 }
 
@@ -255,7 +253,7 @@ EOF
     envLocalWritten=1
   fi
 
-echo
+  echo
 }
 
 drop-db() {
@@ -309,10 +307,8 @@ execute-migrations() {
 }
 
 load-db-name() {
-  if [[ ! -v DB_NAME ]]
-  then
-    if [[ ! -v SYMFONY_INIT_DB_NAME ]]
-    then
+  if [[ ! -v DB_NAME ]]; then
+    if [[ ! -v SYMFONY_INIT_DB_NAME ]]; then
       read-d "Please enter the value for:" "DB_NAME" "project_db" "DB_NAME"
     else
       eval "DB_NAME"="'$SYMFONY_INIT_DB_NAME'"
@@ -321,8 +317,7 @@ load-db-name() {
 }
 
 rm-vendor() {
-  if [[ -d "./vendor" ]]
-  then
+  if [[ -d "./vendor" ]]; then
     read-yny "delete vendor directory?"
     if [[ ! $REPLY =~ ^[Nn]$ ]]; then
       rm -rf ./vendor
@@ -331,8 +326,7 @@ rm-vendor() {
 }
 
 rm-node_modules() {
-  if [[ -d "./node_modules" ]]
-  then
+  if [[ -d "./node_modules" ]]; then
     read-yny "delete node_modules directory?"
     if [[ ! $REPLY =~ ^[Nn]$ ]]; then
       rm -rf ./node_modules
@@ -341,8 +335,7 @@ rm-node_modules() {
 }
 
 rm-cache() {
-  if [[ -d "./var/cache" ]]
-  then
+  if [[ -d "./var/cache" ]]; then
     read-yny "delete cache directory?"
     if [[ ! $REPLY =~ ^[Nn]$ ]]; then
       rm -rf ./var/cache
