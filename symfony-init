@@ -70,25 +70,17 @@ project-update() {
 project-init() {
   composer-install
   yarn-install
-  project-migrate
-  yarn-encore
-  dump-routes
+  migrations
   doctrine-fixtures
   enhavo-init
   create-user
+  yarn-encore
+  dump-routes
 }
 
 project-migrate() {
-  migrationsCreated=0
-  migrationsCreated=0
-
-  read-ynn "is this project brandnew?"
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    create-migrations
-    execute-migrations
-  else
-    execute-migrations
-  fi
+  create-migrations
+  execute-migrations
   if [ ! $migrationsCreated -eq 1 ] && [ ! $migrationsExecuted -eq 1 ]; then
     force-update
   fi
@@ -108,6 +100,22 @@ project-reset() {
   doctrine-fixtures
   enhavo-init
   create-user
+}
+
+migrations() {
+  migrationsCreated=0
+  migrationsCreated=0
+
+  read-ynn "is this project brandnew?"
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    create-migrations
+    execute-migrations
+  else
+    execute-migrations
+  fi
+  if [ ! $migrationsCreated -eq 1 ] && [ ! $migrationsExecuted -eq 1 ]; then
+    force-update
+  fi
 }
 
 load-config() {
