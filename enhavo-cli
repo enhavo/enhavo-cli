@@ -139,10 +139,10 @@ check-config() {
     read-d "please enter a value for:" "DB_PORT" "3306" "DB_PORT"
     read-d "please enter a value for:" "USER_USERNAME" "admin@enhavo.com" "USER_USERNAME"
     read-d "please enter a value for:" "USER_PW" "admin123" "USER_PW"
-    read-d "please enter a value for:" "MAILER_FROM" "dev@xq-web.de" "MAILER_FROM"
-    read-d "please enter a value for:" "MAILER_TO" "info@xq-web.de" "MAILER_TO"
-    read-d "please enter a value for:" "MAILER_DELIVERY_ADDRESS" "info@xq-web.de" "MAILER_DELIVERY_ADDRESS"
-    read-d "please enter a value for:" "MAILER_URL" "smtp://user:password@host?encryption=ssl&auth_mode=login" "MAILER_URL"
+    read-d "please enter a value for:" "MAILER_FROM" "dev@localhost" "MAILER_FROM"
+    read-d "please enter a value for:" "MAILER_TO" "info@localhost" "MAILER_TO"
+    read-d "please enter a value for:" "MAILER_DELIVERY_ADDRESS" "dev@localhost" "MAILER_DELIVERY_ADDRESS"
+    read-d "please enter a value for:" "MAILER_URL" "smtp://user:passwd@domain?encryption=ssl&auth_mode=login" "MAILER_URL"
 
     configLoaded=1
 
