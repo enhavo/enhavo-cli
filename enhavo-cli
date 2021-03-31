@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_DIR="$HOME/.symfony-init"
+CONFIG_DIR="$HOME/.enhavo-cli"
 RED='\033[1;31m'
 GREEN='\033[1;32m'
 NC='\033[0m' # Default Color
@@ -14,8 +14,8 @@ println-green() {
 }
 
 if [[ "$1" = "--update" ]]; then
-  sudo wget https://raw.githubusercontent.com/indivisualvj/symfony-init/master/symfony-init -O /usr/local/bin/symfony-init && sudo chmod +x /usr/local/bin/symfony-init
-  println-green "symfony-init updated"
+  sudo wget https://raw.githubusercontent.com/indivisualvj/enhavo-cli/master/enhavo-cli -O /usr/local/bin/enhavo-cli && sudo chmod +x /usr/local/bin/enhavo-cli
+  println-green "enhavo-cli updated"
   exit 0
 fi
 
@@ -272,9 +272,9 @@ MAILER_TO="$MAILER_TO"
 MAILER_DELIVERY_ADDRESS="$MAILER_DELIVERY_ADDRESS"
 MAILER_URL="$MAILER_URL"
 
-# START variables created by symfony-init bash script
+# START variables created by enhavo-cli bash script
 SYMFONY_INIT_DB_NAME=$DB_NAME
-# END variables created by symfony-init bash script
+# END variables created by enhavo-cli bash script
 EOF
     println-green ".env.local written"
     envLocalWritten=1

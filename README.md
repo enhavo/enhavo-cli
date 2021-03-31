@@ -18,14 +18,14 @@ Install
 To install enhavo-cli, you need to open a `bash`-terminal and type:
 
 ```bash
-sudo wget https://raw.githubusercontent.com/indivisualvj/symfony-init/master/symfony-init -O /usr/local/bin/symfony-init && sudo chmod +x /usr/local/bin/symfony-init
+sudo wget https://raw.githubusercontent.com/indivisualvj/enhavo-cli/master/enhavo-cli -O /usr/local/bin/enhavo-cli && sudo chmod +x /usr/local/bin/enhavo-cli
 ```
 
 # Update
-Once installed you can update symfony-init like so:
+Once installed you can update enhavo-cli like so:
 
 ```bash
-symfony-init --update
+enhavo-cli --update
 ```
 
 Get started
