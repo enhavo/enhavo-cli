@@ -14,7 +14,7 @@ println-green() {
 }
 
 if [[ "$1" = "--update" ]]; then
-  sudo wget https://raw.githubusercontent.com/indivisualvj/enhavo-cli/master/enhavo-cli -O /usr/local/bin/enhavo-cli && sudo chmod +x /usr/local/bin/enhavo-cli
+  sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo-cli -O /usr/local/bin/enhavo-cli && sudo chmod +x /usr/local/bin/enhavo-cli
   println-green "enhavo-cli updated"
   exit 0
 fi
