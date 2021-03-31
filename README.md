@@ -21,7 +21,8 @@ To install enhavo-cli, you need to open a `bash`-terminal and type:
 sudo wget https://raw.githubusercontent.com/indivisualvj/enhavo-cli/master/enhavo-cli -O /usr/local/bin/enhavo-cli && sudo chmod +x /usr/local/bin/enhavo-cli
 ```
 
-# Update
+Update
+-------
 Once installed you can update enhavo-cli like so:
 
 ```bash
