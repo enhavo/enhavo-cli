@@ -1,8 +1,8 @@
 #!/bin/bash
 
 CONFIG_DIR="$HOME/.symfony-init"
-RED='\033[0;31m'
-GREEN='\033[0;32m'
+RED='\033[1;31m'
+GREEN='\033[1;32m'
 NC='\033[0m' # Default Color
 
 println-red() {
@@ -190,8 +190,8 @@ MAILER_FROM="$MAILER_FROM"
 MAILER_TO="$MAILER_TO"
 MAILER_DELIVERY_ADDRESS="$MAILER_DELIVERY_ADDRESS"
 MAILER_URL="$MAILER_URL"
-RED='\033[0;31m'
-GREEN='\033[0;32m'
+RED="$RED"
+GREEN="$GREEN"
 NC='\033[0m' # Default Color
 EOF
     load-config $CONFIG_DIR/config
