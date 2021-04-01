@@ -162,6 +162,7 @@ check-env-local() {
   if [ $envLocalWritten -eq 1 ]; then
     source .env.local
     println-green ".env.local loaded"
+    echo
   fi
 }
 
