@@ -23,7 +23,7 @@ sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo -O /
 
 Update
 -------
-Once installed you can update `enhavo-cli` like so:
+Once installed you can update enhavo-cli like so:
 
 ```bash
 enhavo --self-update
