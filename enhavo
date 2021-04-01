@@ -13,8 +13,8 @@ println-green() {
   printf "${GREEN}$1${NC}\n"
 }
 
-if [[ "$1" = "--update" ]]; then
-  sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo-cli -O /usr/local/bin/enhavo-cli && sudo chmod +x /usr/local/bin/enhavo-cli
+if [[ "$1" = "--self-update" ]]; then
+  sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo -O /usr/local/bin/enhavo && sudo chmod +x /usr/local/bin/enhavo
   println-green "enhavo-cli updated"
   exit 0
 fi
