@@ -2,7 +2,7 @@
 <br/>
 <br/>
 
-`enhavo-cli` is a neat open source tool written for `bash` to handle common tasks in enhavo projects.
+enhavo-cli is a neat open source tool written for `bash` to handle common tasks in enhavo projects.
 
 
 Contribute
@@ -32,7 +32,7 @@ enhavo --self-update
 Get started
 -----------
 
-Simply cd to your project root directory and type `enhavo-cli` for further instructions. 
+Simply cd to your project root directory and type `enhavo` for further instructions. 
 
 
 MIT License
