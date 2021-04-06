@@ -18,7 +18,14 @@ Install
 To install enhavo-cli, just open a `bash`-terminal and type:
 
 ```bash
-sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo -O /usr/local/bin/enhavo && sudo chmod +x /usr/local/bin/enhavo
+sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo -O /usr/local/bin/enhavo \
+&& sudo chmod +x /usr/local/bin/enhavo
+```
+
+Or if you do not have wget installed try:
+```bash
+sudo curl https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo --output /usr/local/bin/enhavo \
+&& sudo chmod +x /usr/local/bin/enhavo
 ```
 
 Update

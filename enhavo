@@ -376,8 +376,8 @@ execute-migrations() {
 }
 
 load-db-name() {
-  if [[ ! -v DB_NAME ]]; then
-    if [[ ! -v ENHAVO_CLI_DB_NAME ]]; then
+  if [[ -z "$DB_NAME" ]]; then
+    if [[ -z "$ENHAVO_CLI_DB_NAME" ]]; then
       read-d "please enter the value for:" "DB_NAME" "project_db" "DB_NAME"
     else
       eval "DB_NAME"="'$ENHAVO_CLI_DB_NAME'"
