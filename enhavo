@@ -20,6 +20,7 @@ if [[ "$1" = "--self-update" ]]; then
 fi
 
 menu() {
+  echo
   echo 'Choose a task:'
   echo '[r] reset/fix non working project'
   echo '[u] update project after git pull'
@@ -27,7 +28,7 @@ menu() {
   echo '[m] create/execute migrations'
   echo '[i] initialize freshly installed project'
   echo '[c] cancel'
-  read -p "type one of the options: [r/u/m/i/c]" -n 1 -r
+  read -p "type one of the options [r/u/m/i/c]: " -n 1 -r
   echo
   echo
 
@@ -108,6 +109,7 @@ migrations() {
 
   read-ynn "is this project brandnew?"
   if [[ $REPLY =~ ^[Yy]$ ]]; then
+    create-db
     create-migrations
     execute-migrations
   else
@@ -123,7 +125,6 @@ load-config() {
   if [[ -f $1 ]]; then
     source $1
     println-green "config loaded from $1"
-    echo
     configLoaded=1
   fi
 }
@@ -132,7 +133,6 @@ check-config() {
   if [ $configLoaded -eq 0 ]; then
     echo
     println-red "no config file found."
-    echo
     read-d "please enter a value for:" "DB_USER" "root" "DB_USER"
     read-d "please enter a value for:" "DB_PW" "root" "DB_PW"
     read-d "please enter a value for:" "DB_HOST" "127.0.0.1" "DB_HOST"
@@ -147,14 +147,13 @@ check-config() {
     configLoaded=1
 
     create-config
-    echo
   fi
 }
 
 check-env-local() {
   if [[ ! -f .env.local ]]; then
     println-red ".env.local missing"
-    env-local
+    create-env-local
   else
     envLocalWritten=1
   fi
@@ -162,7 +161,6 @@ check-env-local() {
   if [ $envLocalWritten -eq 1 ]; then
     source .env.local
     println-green ".env.local loaded"
-    echo
   fi
 }
 
@@ -171,7 +169,6 @@ create-config() {
   read-yny "save config to your home directory?"
   if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     mkdir -p $CONFIG_DIR
-    echo "mailer_url: $MAILER_URL"
     cat >$CONFIG_DIR/config <<EOF
 #!/bin/bash
 
@@ -199,8 +196,6 @@ EOF
     println-green "config written to $CONFIG_DIR/config"
     configCreated=1
   fi
-
-  echo
 }
 
 composer-install() {
@@ -240,6 +235,7 @@ yarn-encore() {
     yarn encore dev --progress
     yarnEncored=1
   fi
+  echo
 }
 
 gulp-sass() {
@@ -248,6 +244,7 @@ gulp-sass() {
     gulp sass
     return 1
   fi
+  echo
 }
 
 assets-install() {
@@ -257,9 +254,10 @@ assets-install() {
     $COMMAND assets:install
     assetsInstalled=1
   fi
+  echo
 }
 
-env-local() {
+create-env-local() {
   envLocalWritten=0
   read-yny "create .env.local?"
   if [[ ! $REPLY =~ ^[Nn]$ ]]; then
@@ -273,15 +271,14 @@ MAILER_TO="$MAILER_TO"
 MAILER_DELIVERY_ADDRESS="$MAILER_DELIVERY_ADDRESS"
 MAILER_URL="$MAILER_URL"
 
-# START variables created by enhavo-cli bash script
-SYMFONY_INIT_DB_NAME=$DB_NAME
-# END variables created by enhavo-cli bash script
+# START variables created by enhavo-cli
+ENHAVO_CLI_DB_NAME=$DB_NAME
+# END variables created by enhavo-cli
 EOF
     println-green ".env.local written"
     envLocalWritten=1
   fi
 
-  echo
 }
 
 drop-db() {
@@ -332,6 +329,7 @@ enhavo-init() {
     fi
     return
   fi
+  echo
 }
 
 doctrine-fixtures() {
@@ -343,6 +341,7 @@ doctrine-fixtures() {
     fi
     return
   fi
+  echo
 }
 
 force-update() {
@@ -375,10 +374,10 @@ execute-migrations() {
 
 load-db-name() {
   if [[ ! -v DB_NAME ]]; then
-    if [[ ! -v SYMFONY_INIT_DB_NAME ]]; then
+    if [[ ! -v ENHAVO_CLI_DB_NAME ]]; then
       read-d "please enter the value for:" "DB_NAME" "project_db" "DB_NAME"
     else
-      eval "DB_NAME"="'$SYMFONY_INIT_DB_NAME'"
+      eval "DB_NAME"="'$ENHAVO_CLI_DB_NAME'"
     fi
   fi
 }
@@ -419,12 +418,25 @@ rm-cache() {
 }
 
 read-yny() {
-  read -p "$1 [y/n](defaults to y): " -n 1 -r
-  echo
+  read-yn "$1" "y"
 }
 
 read-ynn() {
-  read -p "$1 [y/n](defaults to n): " -n 1 -r
+  read-yn "$1" "n"
+}
+
+read-yn() {
+  read -p "$1 [y/n](defaults to $2): " -n 1 -r
+
+  if [[ ! $REPLY =~ (^[yYnN]$)|(^$) ]]; then
+    echo
+    println-red "invalid input. please try again."
+    read-yn "$1" "$2"
+    return
+
+  elif [[ ! $REPLY =~ ^$ ]]; then
+    echo
+  fi
   echo
 }
 
