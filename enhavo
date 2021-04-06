@@ -22,13 +22,14 @@ fi
 menu() {
   echo
   echo 'Choose a task:'
-  echo '[r] reset/fix non working project'
+  echo '[i] initialize freshly installed project'
   echo '[u] update project after git pull'
+  echo '[r] reset/fix non working project'
   echo '[d] drop/create db'
   echo '[m] create/execute migrations'
-  echo '[i] initialize freshly installed project'
+  echo '[l] create login'
   echo '[c] cancel'
-  read -p "type one of the options [r/u/m/i/c]: " -n 1 -r
+  read -p "type one of the options: " -n 1 -r
   echo
   echo
 
@@ -41,6 +42,8 @@ menu() {
   elif [[ $REPLY =~ ^[Mm]$ ]]; then
     instructions
     project-migrate
+  elif [[ $REPLY =~ ^[Ll]$ ]]; then
+    create-user
   elif [[ $REPLY =~ ^[Dd]$ ]]; then
     instructions
     drop-db
