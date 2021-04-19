@@ -1,0 +1,25 @@
+{
+    "name": "enhavo/enhavo-cli",
+    "description": "The enhavo-cli is a neat tool to handle common tasks in enhavo projects",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Enhavo\\Component\\Cli\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Enhavo\\Component\\Cli\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^7.3|^8.0",
+        "symfony/console": "^5.2",
+        "symfony/process": "^5.2",
+        "symfony/finder": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    }
+}
