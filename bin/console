@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Enhavo\Component\Cli\Application;
+
+$input = new ArgvInput();
+$application = new Application();
+$application->run($input);
