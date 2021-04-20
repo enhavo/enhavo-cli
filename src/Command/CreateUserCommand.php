@@ -2,22 +2,22 @@
 
 namespace Enhavo\Component\Cli\Command;
 
-use Enhavo\Component\Cli\Subroutine\Initialize;
+use Enhavo\Component\Cli\Subroutine\CreateUser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InitializeCommand extends Command
+class CreateUserCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setDescription('Initialize freshly installed project')
+            ->setDescription('Create user for login')
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        return (new Initialize($input, $output, $this->getHelper('question')))();
+        return (new CreateUser($input, $output, $this->getHelper('question')))();
     }
 }
