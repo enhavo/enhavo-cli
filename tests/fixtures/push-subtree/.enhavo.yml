@@ -1,0 +1,7 @@
+subtrees:
+    repo_one:
+        repository: 'git@github.com:test/repo_one'
+        path: src/RepoOne
+    repo_two:
+        repository: 'git@github.com:test/repo_two'
+        path: src/RepoTwo
