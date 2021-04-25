@@ -36,5 +36,10 @@ jobs:
             -   name: Install dependencies
                 run: composer install --prefer-dist
 
+            -   name: Setup git
+                run: |
+                    git config --global user.email "you@example.com"
+                    git config --global user.name "Your Name"
+
             -   name: Run tests
                 run: bin/phpunit
