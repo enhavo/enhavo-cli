@@ -3,11 +3,30 @@
 namespace Enhavo\Component\Cli\Task;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DownloadSplitSh extends AbstractSubroutine
 {
+    /** @var bool */
+    private $yes;
+
+    /**
+     * Interactive constructor.
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param QuestionHelper $questionHelper
+     * @param bool $yes
+     */
+    public function __construct(InputInterface $input, OutputInterface $output, QuestionHelper $questionHelper, ?bool $yes)
+    {
+        parent::__construct($input, $output, $questionHelper);
+        $this->yes = $yes;
+    }
+
     public function __invoke($overwrite = false)
     {
         $home = getenv("HOME");
@@ -18,12 +37,18 @@ class DownloadSplitSh extends AbstractSubroutine
         }
 
         while(true) {
-            $question = new Question(sprintf('install splitsh to "%s"? [y/n]', $path), 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            if (!$this->yes) {
+                $question = new Question(sprintf('install splitsh to "%s"? [y/n]', $path), 'y');
+                $option = $this->questionHelper->ask($this->input, $this->output, $question);
 
-            if (strtolower($option) === 'n') {
-                return null;
-            } elseif (strtolower($option) === 'y') {
+                if (strtolower($option) === 'n') {
+                    return null;
+                } elseif (strtolower($option) === 'y') {
+                    self::download($path, $overwrite);
+                    return $path;
+                }
+            } else {
+                $this->output->writeln(sprintf('install splitsh to "%s"', $path));
                 self::download($path, $overwrite);
                 return $path;
             }

@@ -19,6 +19,7 @@ class PushSubtreeCommand extends Command
             ->addOption('tag', null, InputOption::VALUE_REQUIRED, 'Tag')
             ->addOption('branch', null, InputOption::VALUE_REQUIRED, 'Branch name')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Force push')
+            ->addOption('yes', null, InputOption::VALUE_NONE, 'Always yes')
         ;
     }
 
@@ -28,8 +29,9 @@ class PushSubtreeCommand extends Command
         $force = $input->getOption('force');
         $branch = $input->getOption('branch');
         $tag = $input->getOption('tag');
+        $yes = $input->getOption('yes');
         $configuration = (new Factory())->create();
 
-        return (new PushSubtree($input, $output, $this->getHelper('question'), $configuration, $name, $force, $branch, $tag))();
+        return (new PushSubtree($input, $output, $this->getHelper('question'), $configuration, $name, $force, $branch, $tag, $yes))();
     }
 }
