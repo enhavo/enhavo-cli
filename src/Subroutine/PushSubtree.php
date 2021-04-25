@@ -7,6 +7,7 @@ use Enhavo\Component\Cli\Configuration\Configuration;
 use Enhavo\Component\Cli\Configuration\Subtree;
 use Enhavo\Component\Cli\Git\Git;
 use Enhavo\Component\Cli\Task\DownloadSplitSh;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,8 +60,17 @@ class PushSubtree extends AbstractSubroutine
 
     public function __invoke()
     {
-        (new DownloadSplitSh($this->input, $this->output, $this->questionHelper))();
+        if (!count($this->configuration->getSubtrees())) {
+            $this->output->writeln(sprintf('No subtrees configured'));
+            return Command::FAILURE;
+        }
+
+        $splitShPath = (new DownloadSplitSh($this->input, $this->output, $this->questionHelper))();
         $git = new Git(getcwd());
+        if ($splitShPath !== null) {
+            $git->setSplitShBin($splitShPath);
+        }
+
         $subtrees = [];
         foreach ($this->configuration->getSubtrees() as $subtree) {
             if ($this->name && $this->name === $subtree->getName()) {
@@ -70,15 +80,17 @@ class PushSubtree extends AbstractSubroutine
                 $subtrees[] = $subtree;
             }
         }
+
         foreach ($subtrees as $subtree) {
             if (!$git->hasRemote($subtree->getName())) {
                 // Add remote to main repository;
-                $git->addRemote($subtree->getName(), $subtree->getRepository());
+                $git->addRemote($subtree->getName(), $subtree->getUrl());
             }
         }
+
         $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
         foreach ($subtrees as $subtree) {
-            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPath(), $branch);
+            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch);
         }
 
         if ($this->tag) {
@@ -86,6 +98,8 @@ class PushSubtree extends AbstractSubroutine
         } else {
             $this->pushBranch($subtrees, $git);
         }
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -96,7 +110,8 @@ class PushSubtree extends AbstractSubroutine
     {
         $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
         foreach ($subtrees as $subtree) {
-            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPath(), $branch);
+            $this->output->writeln(sprintf('Push branch "%s" to remote "%s"', $branch, $subtree->getName()));
+            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch);
         }
     }
 
@@ -107,7 +122,8 @@ class PushSubtree extends AbstractSubroutine
     private function pushTag(array $subtrees,  Git $git)
     {
         foreach ($subtrees as $subtree) {
-            $git->pushSubtreeTag($subtree->getName(), $subtree->getPath(), $this->tag);
+            $this->output->writeln(sprintf('Push tag "%s" to remote "%s"', $this->tag, $subtree->getName()));
+            $git->pushSubtreeTag($subtree->getName(), $subtree->getPrefix(), $this->tag);
         }
     }
 }

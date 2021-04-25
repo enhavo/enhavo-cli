@@ -1,0 +1,8 @@
+subtrees:
+  repo_one:
+    url: 'git@github.com:test/repo_one'
+    prefix: src/RepoOne
+  repo_two:
+    url: 'git@github.com:test/repo_two'
+    prefix: src/RepoTwo
+    push_tag: false

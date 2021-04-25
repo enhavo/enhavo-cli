@@ -8,10 +8,10 @@ class Subtree
     private $name;
 
     /** @var string */
-    private $repository;
+    private $url;
 
     /** @var string */
-    private $path;
+    private $prefix;
 
     /** @var bool */
     private $pushTag;
@@ -19,15 +19,15 @@ class Subtree
     /**
      * Subtree constructor.
      * @param string $name
-     * @param string $repository
-     * @param string $path
+     * @param string $url
+     * @param string $prefix
      * @param bool $pushTag
      */
-    public function __construct(string $name, string $repository, string $path, bool $pushTag = true)
+    public function __construct(string $name, string $url, string $prefix, bool $pushTag = true)
     {
         $this->name = $name;
-        $this->repository = $repository;
-        $this->path = $path;
+        $this->url = $url;
+        $this->prefix = $prefix;
         $this->pushTag = $pushTag;
     }
 
@@ -42,16 +42,24 @@ class Subtree
     /**
      * @return string
      */
-    public function getRepository(): string
+    public function getUrl(): string
     {
-        return $this->repository;
+        return $this->url;
     }
 
     /**
      * @return string
      */
-    public function getPath(): string
+    public function getPrefix(): string
     {
-        return $this->path;
+        return $this->prefix;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPushTag(): bool
+    {
+        return $this->pushTag;
     }
 }

@@ -25,16 +25,17 @@ class Factory
         return $configuration;
     }
 
-    private function findGlobalConfigFile()
+    protected function findGlobalConfigFile()
     {
-        $configFile = '~/.enhavo/config.yml';
+        $home = getenv('HOME');
+        $configFile = sprintf('%s/.enhavo/config.yml', $home);
         if (file_exists($configFile)) {
             return $configFile;
         }
         return null;
     }
 
-    private function findLocalConfigFile()
+    protected function findLocalConfigFile()
     {
         if (getcwd() === false) {
             return null;
@@ -52,8 +53,8 @@ class Factory
         $config = Yaml::parse($content);
 
         if (isset($config['subtrees'])) {
-            foreach($config['subtrees'] as $subtree) {
-                $configuration->addSubtree(new Subtree($subtree['name'], $subtree['repository'], $subtree['path'], isset($subtree['path']) ? $subtree['path'] : true));
+            foreach($config['subtrees'] as $name => $subtree) {
+                $configuration->addSubtree(new Subtree($name, $subtree['url'], $subtree['prefix'], isset($subtree['push_tag']) ? $subtree['push_tag'] : true));
             }
         }
 
