@@ -4,7 +4,9 @@ namespace Enhavo\Component\Cli\Subroutine;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\Configuration\Configuration;
+use Enhavo\Component\Cli\Configuration\Subtree;
 use Enhavo\Component\Cli\Git\Git;
+use Enhavo\Component\Cli\Task\DownloadSplitSh;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,16 +16,16 @@ class PushSubtree extends AbstractSubroutine
     /** @var Configuration */
     private $configuration;
 
-    /** @var string */
-    private $workspace;
+    /** @var string|null */
+    private $name;
 
-    /** @var string */
-    private $remote;
+    /** @var string|null */
+    private $tag;
 
-    /** @var string */
+    /** @var string|null */
     private $branch;
 
-    /** @var bool */
+    /** @var bool|null */
     private $force;
 
     /**
@@ -32,97 +34,80 @@ class PushSubtree extends AbstractSubroutine
      * @param OutputInterface $output
      * @param QuestionHelper $questionHelper
      * @param Configuration $configuration
-     * @param string $workspace
-     * @param string $remote
-     * @param string $branch
-     * @param bool $force
+     * @param string|null $name
+     * @param bool|null $force
+     * @param string|null $branch
+     * @param string|null $tag
      */
     public function __construct(
         InputInterface $input,
         OutputInterface $output,
         QuestionHelper $questionHelper,
         Configuration $configuration,
-        string $workspace,
-        string $remote,
-        string $branch,
-        bool $force
+        ?string $name,
+        ?bool $force,
+        ?string $branch,
+        ?string $tag
     ) {
         parent::__construct($input, $output, $questionHelper);
         $this->configuration = $configuration;
-        $this->workspace = $workspace;
-        $this->remote = $remote;
-        $this->branch = $branch;
+        $this->name = $name;
         $this->force = $force;
+        $this->branch = $branch;
+        $this->tag = $tag;
     }
 
-
-    public function distribute()
+    public function __invoke()
     {
-        $workspace = realpath($this->workspace);
-
-        $this->checkWorkspace($workspace);
-
-        $git = new Git($workspace, $this->configuration->getSubtrees());
-
-        if (!$git->exists()) {
-            // Repository not exists ... cloning
-            $git->clone();
-        }
-
-        $git->fetch();
-
-        // set remotes
+        (new DownloadSplitSh($this->input, $this->output, $this->questionHelper))();
+        $git = new Git(getcwd());
+        $subtrees = [];
         foreach ($this->configuration->getSubtrees() as $subtree) {
-            if ($this->remote && $this->remote != $subtree->getName()) {
+            if ($this->name && $this->name === $subtree->getName()) {
+                $subtrees[] = $subtree;
                 continue;
+            } elseif ($this->name === null) {
+                $subtrees[] = $subtree;
             }
-
+        }
+        foreach ($subtrees as $subtree) {
             if (!$git->hasRemote($subtree->getName())) {
                 // Add remote to main repository;
                 $git->addRemote($subtree->getName(), $subtree->getRepository());
             }
         }
-
-        // push branches
-        $branches = $git->getBranches();
-        foreach ($branches as $branch) {
-            if ($this->remote && $branch != $this->remote) {
-                continue;
-            }
-
-            foreach ($this->configuration->getSubtrees() as $distribute) {
-                if ($this->remote && $this->remote != $distribute->getName()) {
-                    continue;
-                }
-
-                // Push branch to remote
-                $git->pushBranch($distribute->getName(), $distribute->getPath(), $branch, $this->force);
-            }
+        $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
+        foreach ($subtrees as $subtree) {
+            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPath(), $branch);
         }
 
-        // push tags
-        $tags = $git->getTags();
-        foreach ($tags as $tag) {
-            if ($this->remote && $tag != $this->remote) {
-                continue;
-            }
-
-            foreach ($this->configuration->getSubtrees() as $distribute) {
-                if ($this->remote && $this->remote != $distribute->getName()) {
-                    continue;
-                }
-
-                if (!$git->hasTag($distribute->getName(), $tag)) {
-                    $git->pushTag($distribute->getName(), $distribute->getPath(), $tag);
-                }
-            }
+        if ($this->tag) {
+            $this->pushTag($subtrees, $git);
+        } else {
+            $this->pushBranch($subtrees, $git);
         }
     }
 
-    private static function checkWorkspace(string $workspace)
+    /**
+     * @param Subtree[] $subtrees
+     * @param Git $git
+     */
+    private function pushBranch(array $subtrees, Git $git)
     {
-        if(!file_exists($workspace)) {
-            mkdir($workspace, 0777, true);
+        $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
+        foreach ($subtrees as $subtree) {
+            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPath(), $branch);
+        }
+    }
+
+    /**
+     * @param Subtree[] $subtrees
+     * @param Git $git
+     */
+    private function pushTag(array $subtrees,  Git $git)
+    {
+        foreach ($subtrees as $subtree) {
+            $git->pushSubtreeTag($subtree->getName(), $subtree->getPath(), $this->tag);
         }
     }
 }

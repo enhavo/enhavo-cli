@@ -13,17 +13,22 @@ class Subtree
     /** @var string */
     private $path;
 
+    /** @var bool */
+    private $pushTag;
+
     /**
      * Subtree constructor.
      * @param string $name
      * @param string $repository
      * @param string $path
+     * @param bool $pushTag
      */
-    public function __construct(string $name, string $repository, string $path)
+    public function __construct(string $name, string $repository, string $path, bool $pushTag = true)
     {
         $this->name = $name;
         $this->repository = $repository;
         $this->path = $path;
+        $this->pushTag = $pushTag;
     }
 
     /**

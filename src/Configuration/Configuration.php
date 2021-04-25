@@ -7,6 +7,12 @@ class Configuration
     /** @var Subtree[] */
     private $subtrees = [];
 
+    /** @var string|null */
+    private $npmToken;
+
+    /** @var string|null */
+    private $npmRegistry;
+
     /**
      * @param Subtree $subtree
      */
@@ -21,5 +27,37 @@ class Configuration
     public function getSubtrees(): array
     {
         return $this->subtrees;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNpmToken(): ?string
+    {
+        return $this->npmToken;
+    }
+
+    /**
+     * @param string|null $npmToken
+     */
+    public function setNpmToken(?string $npmToken): void
+    {
+        $this->npmToken = $npmToken;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNpmRegistry(): ?string
+    {
+        return $this->npmRegistry;
+    }
+
+    /**
+     * @param string|null $npmRegistry
+     */
+    public function setNpmRegistry(?string $npmRegistry): void
+    {
+        $this->npmRegistry = $npmRegistry;
     }
 }

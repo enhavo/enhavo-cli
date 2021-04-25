@@ -14,6 +14,9 @@
         }
     },
     "require": {
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-zlib": "*",
         "php": "^7.3|^8.0",
         "symfony/console": "^5.2",
         "symfony/process": "^5.2",
