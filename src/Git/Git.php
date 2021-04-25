@@ -9,9 +9,6 @@ class Git
     /** @var string */
     private $dir;
 
-    /** @var string */
-    private $url;
-
     /** @var Filesystem */
     private $fs;
 
@@ -216,7 +213,11 @@ class Git
             $branchId = uniqid();
             $this->execute(["git", "checkout", $commit]);
             $this->execute(["git", "checkout", "-b", $branchId]);
-            $this->execute(["git", "push", "--set-upstream", $force ? '--force' : '', $remote, sprintf("%s:%s", $branchId, $branch)]);
+            if ($force) {
+                $this->execute(["git", "push", "--set-upstream", $remote, '--force', sprintf("%s:%s", $branchId, $branch)]);
+            } else {
+                $this->execute(["git", "push", "--set-upstream", $remote, sprintf("%s:%s", $branchId, $branch)]);
+            }
             $this->execute(["git", "checkout", $currentBranch]);
             $this->execute(["git", "branch", "-D", $branchId]);
         } else {
@@ -316,10 +317,5 @@ class Git
             }
         }
         return false;
-    }
-
-    public function release()
-    {
-        // implement solution https://stackoverflow.com/questions/17911466/how-to-push-tags-with-git-subtree
     }
 }

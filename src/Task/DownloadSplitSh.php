@@ -14,7 +14,7 @@ class DownloadSplitSh extends AbstractSubroutine
         $path = sprintf("%s/.enhavo/bin/splitsh-lite", realpath($home));
         $fs = new Filesystem();
         if ($fs->exists($path)) {
-            return;
+            return $path;
         }
 
         while(true) {
@@ -22,10 +22,10 @@ class DownloadSplitSh extends AbstractSubroutine
             $option = $this->questionHelper->ask($this->input, $this->output, $question);
 
             if (strtolower($option) === 'n') {
-                return;
+                return null;
             } elseif (strtolower($option) === 'y') {
                 self::download($path, $overwrite);
-                return;
+                return $path;
             }
         }
     }
