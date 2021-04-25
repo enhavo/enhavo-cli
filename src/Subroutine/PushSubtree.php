@@ -29,6 +29,9 @@ class PushSubtree extends AbstractSubroutine
     /** @var bool|null */
     private $force;
 
+    /** @var bool|null */
+    private $yes;
+
     /**
      * PushSubtree constructor.
      * @param InputInterface $input
@@ -39,6 +42,7 @@ class PushSubtree extends AbstractSubroutine
      * @param bool|null $force
      * @param string|null $branch
      * @param string|null $tag
+     * @param bool|null $yes
      */
     public function __construct(
         InputInterface $input,
@@ -48,7 +52,8 @@ class PushSubtree extends AbstractSubroutine
         ?string $name,
         ?bool $force,
         ?string $branch,
-        ?string $tag
+        ?string $tag,
+        ?bool $yes
     ) {
         parent::__construct($input, $output, $questionHelper);
         $this->configuration = $configuration;
@@ -56,6 +61,7 @@ class PushSubtree extends AbstractSubroutine
         $this->force = $force;
         $this->branch = $branch;
         $this->tag = $tag;
+        $this->yes = $yes;
     }
 
     public function __invoke()
@@ -65,7 +71,7 @@ class PushSubtree extends AbstractSubroutine
             return Command::FAILURE;
         }
 
-        $splitShPath = (new DownloadSplitSh($this->input, $this->output, $this->questionHelper))();
+        $splitShPath = (new DownloadSplitSh($this->input, $this->output, $this->questionHelper, $this->yes))();
         $git = new Git(getcwd());
         if ($splitShPath !== null) {
             $git->setSplitShBin($splitShPath);
@@ -83,14 +89,9 @@ class PushSubtree extends AbstractSubroutine
 
         foreach ($subtrees as $subtree) {
             if (!$git->hasRemote($subtree->getName())) {
-                // Add remote to main repository;
+                $this->output->writeln(sprintf('Add remote "%s"', $subtree->getName()));
                 $git->addRemote($subtree->getName(), $subtree->getUrl());
             }
-        }
-
-        $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
-        foreach ($subtrees as $subtree) {
-            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch);
         }
 
         if ($this->tag) {
