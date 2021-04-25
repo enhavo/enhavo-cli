@@ -6,6 +6,8 @@ use Enhavo\Component\Cli\Command\CreateUserCommand;
 use Enhavo\Component\Cli\Command\InitializeCommand;
 use Enhavo\Component\Cli\Command\InteractiveCommand;
 use Enhavo\Component\Cli\Command\MigrateCommand;
+use Enhavo\Component\Cli\Command\NpmReleaseCommand;
+use Enhavo\Component\Cli\Command\PushSubtreeCommand;
 use Enhavo\Component\Cli\Command\RecreateDatabaseCommand;
 use Enhavo\Component\Cli\Command\ResetProjectCommand;
 use Enhavo\Component\Cli\Command\SelfUpdateCommand;
@@ -32,6 +34,8 @@ class Application
         $this->application->add(new ResetProjectCommand('reset-project'));
         $this->application->add(new UpdateCommand('update'));
         $this->application->add(new SelfUpdateCommand('self-update'));
+        $this->application->add(new PushSubtreeCommand('push-subtree'));
+        $this->application->add(new NpmReleaseCommand('npm-release'));
         $this->application->setDefaultCommand('interactive');
         return $this->application->run($input);
     }
