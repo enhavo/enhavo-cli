@@ -11,7 +11,7 @@ class Configuration
     private $npmToken;
 
     /** @var string|null */
-    private $npmRegistry;
+    private $npmRegistry = 'registry.npmjs.org';
 
     /**
      * @param Subtree $subtree

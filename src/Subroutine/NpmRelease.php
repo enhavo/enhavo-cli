@@ -88,6 +88,7 @@ class NpmRelease extends AbstractSubroutine
     {
         $url = sprintf('//%s/:_authToken="%s"', $this->configuration->getNpmRegistry(), $this->configuration->getNpmToken());
         file_put_contents('.npmrc', $url);
+        $this->output->writeln(sprintf('Publish version "%s"', $this->version));
         $this->execute(['npm', 'publish', '--access', $this->privateAccess ? 'private' : 'public']);
         unlink('.npmrc');
 
@@ -98,12 +99,16 @@ class NpmRelease extends AbstractSubroutine
     {
         $process = new Process($command);
         $process->run();
+
         if ($process->isSuccessful()) {
-            $output = $process->getOutput();
-            $this->output->writeln($output);
-        } else {
-            $output = $process->getErrorOutput();
-            $this->output->writeln($output);
+            return $process->getOutput();
         }
+
+        $output = $process->getErrorOutput();
+        if (empty($output)) {
+            $output = $process->getOutput();
+        }
+
+        throw new \Exception($output);
     }
 }
