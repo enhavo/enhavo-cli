@@ -200,9 +200,14 @@ class Git
         return trim($this->execute(["git", "branch", "--show-current"]));
     }
 
+    public function getCurrentCommit()
+    {
+        return trim($this->execute(["git", "rev-parse", "HEAD"]));
+    }
+
     public function pushSubtreeBranch(string $remote, string $prefix, string $branch = 'main', bool $force = false)
     {
-        $currentBranch = $this->getCurrentBranch();
+        $currentBranch = $this->getCurrentBranch() ? $this->getCurrentBranch() : $this->getCurrentCommit();
 
         $this->checkout($branch);
 
@@ -227,7 +232,7 @@ class Git
 
     public function pushSubtreeTag(string $remote, string $prefix, string $tag)
     {
-        $currentBranch = $this->getCurrentBranch();
+        $currentBranch = $this->getCurrentBranch() ? $this->getCurrentBranch() : $this->getCurrentCommit();
         $this->execute(["git", "checkout", $tag]);
 
         $branchId = uniqid();
