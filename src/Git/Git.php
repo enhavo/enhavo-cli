@@ -218,13 +218,18 @@ class Git
             $branchId = uniqid();
             $this->execute(["git", "checkout", $commit]);
             $this->execute(["git", "checkout", "-b", $branchId]);
-            if ($force) {
-                $this->execute(["git", "push", "--set-upstream", $remote, '--force', sprintf("%s:%s", $branchId, $branch)]);
-            } else {
-                $this->execute(["git", "push", "--set-upstream", $remote, sprintf("%s:%s", $branchId, $branch)]);
+            try {
+                if ($force) {
+                    $this->execute(["git", "push", "--set-upstream", $remote, '--force', sprintf("%s:%s", $branchId, $branch)]);
+                } else {
+                    $this->execute(["git", "push", "--set-upstream", $remote, sprintf("%s:%s", $branchId, $branch)]);
+                }
+            } catch (GitException $e) {
+                throw $e;
+            } finally {
+                $this->execute(["git", "checkout", $currentBranch]);
+                $this->execute(["git", "branch", "-D", $branchId]);
             }
-            $this->execute(["git", "checkout", $currentBranch]);
-            $this->execute(["git", "branch", "-D", $branchId]);
         } else {
             $this->execute(["git", "checkout", $currentBranch]);
         }

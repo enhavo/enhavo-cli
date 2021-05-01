@@ -71,12 +71,6 @@ class PushSubtree extends AbstractSubroutine
             return Command::FAILURE;
         }
 
-        $splitShPath = (new DownloadSplitSh($this->input, $this->output, $this->questionHelper, $this->yes))();
-        $git = new Git(getcwd());
-        if ($splitShPath !== null) {
-            $git->setSplitShBin($splitShPath);
-        }
-
         $subtrees = [];
         foreach ($this->configuration->getSubtrees() as $subtree) {
             if ($this->name && $this->name === $subtree->getName()) {
@@ -85,6 +79,17 @@ class PushSubtree extends AbstractSubroutine
             } elseif ($this->name === null) {
                 $subtrees[] = $subtree;
             }
+        }
+
+        if (!count($subtrees)) {
+            $this->output->writeln(sprintf('No subtrees found'));
+            return Command::FAILURE;
+        }
+
+        $splitShPath = (new DownloadSplitSh($this->input, $this->output, $this->questionHelper, $this->yes))();
+        $git = new Git(getcwd());
+        if ($splitShPath !== null) {
+            $git->setSplitShBin($splitShPath);
         }
 
         foreach ($subtrees as $subtree) {
@@ -112,7 +117,7 @@ class PushSubtree extends AbstractSubroutine
         $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
         foreach ($subtrees as $subtree) {
             $this->output->writeln(sprintf('Push branch "%s" to remote "%s"', $branch, $subtree->getName()));
-            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch);
+            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch, $this->force);
         }
     }
 
