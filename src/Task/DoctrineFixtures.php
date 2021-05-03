@@ -7,14 +7,14 @@ use Enhavo\Component\Cli\ExecuteTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\Question;
 
-class ComposerInstall extends AbstractSubroutine
+class DoctrineFixtures extends AbstractSubroutine
 {
     use ExecuteTrait;
 
     public function __invoke()
     {
         while(true) {
-            $question = new Question('composer install? [y/n]', 'y');
+            $question = new Question('load doctrine fixtures? [y/n]', 'y');
             $option = $this->questionHelper->ask($this->input, $this->output, $question);
 
             if (strtolower($option) === 'n') {

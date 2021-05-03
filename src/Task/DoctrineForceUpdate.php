@@ -3,24 +3,24 @@
 namespace Enhavo\Component\Cli\Task;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
-use Enhavo\Component\Cli\ExecuteTrait;
+use Enhavo\Component\Cli\BinConsoleTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\Question;
 
-class ComposerInstall extends AbstractSubroutine
+class DoctrineForceUpdate extends AbstractSubroutine
 {
-    use ExecuteTrait;
+    use BinConsoleTrait;
 
     public function __invoke()
     {
         while(true) {
-            $question = new Question('composer install? [y/n]', 'y');
+            $question = new Question('do force-update? [y/n]', 'y');
             $option = $this->questionHelper->ask($this->input, $this->output, $question);
 
             if (strtolower($option) === 'n') {
                 return Command::SUCCESS;
             } elseif (strtolower($option) === 'y') {
-                return $this->execute(['composer', 'install'], $this->output);
+                return $this->console(['doctrine:schema:update', '--force'], $this->output);
             }
         }
     }
