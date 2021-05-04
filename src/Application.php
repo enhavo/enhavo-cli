@@ -2,8 +2,11 @@
 
 namespace Enhavo\Component\Cli;
 
+use Enhavo\Component\Cli\Command\CreateProjectCommand;
+use Enhavo\Component\Cli\Command\CreateTestCommand;
 use Enhavo\Component\Cli\Command\CreateUserCommand;
 use Enhavo\Component\Cli\Command\InitializeCommand;
+use Enhavo\Component\Cli\Command\InstallElasticSearchCommand;
 use Enhavo\Component\Cli\Command\InteractiveCommand;
 use Enhavo\Component\Cli\Command\MigrateCommand;
 use Enhavo\Component\Cli\Command\NpmReleaseCommand;
@@ -26,8 +29,11 @@ class Application
 
     public function run(InputInterface $input): int
     {
+        //$this->application->add(new CreateProjectCommand('create'));
+        //$this->application->add(new CreateTestCommand('create-test'));
         $this->application->add(new CreateUserCommand('create-user'));
         $this->application->add(new InitializeCommand('initialize'));
+        //$this->application->add(new InstallElasticSearchCommand('install-elasticsearch'));
         $this->application->add(new InteractiveCommand('interactive'));
         $this->application->add(new MigrateCommand('migrate'));
         $this->application->add(new RecreateDatabaseCommand('recreate-database'));
