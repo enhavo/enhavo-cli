@@ -65,6 +65,36 @@ class Factory
         if (isset($config['npm']['registry'])) {
             $configuration->setNpmRegistry($config['npm']['registry']);
         }
+
+        if (isset($config['defaults']['env'])) {
+            foreach ($config['defaults']['env'] as $key => $value) {
+                $configuration->addDefaultEnv(new Env($key, $value));
+            }
+        }
+
+        if (isset($config['defaults']['user_email'])) {
+            $configuration->setDefaultUserEmail($config['defaults']['user_email']);
+        }
+
+        if (isset($config['defaults']['user_password'])) {
+            $configuration->setDefaultUserPassword($config['defaults']['user_password']);
+        }
+
+        if (isset($config['defaults']['database_host'])) {
+            $configuration->setDefaultDatabaseHost($config['defaults']['database_host']);
+        }
+
+        if (isset($config['defaults']['database_user'])) {
+            $configuration->setDefaultDatabaseUser($config['defaults']['database_user']);
+        }
+
+        if (isset($config['defaults']['database_password'])) {
+            $configuration->setDefaultDatabasePassword($config['defaults']['database_password']);
+        }
+
+        if (isset($config['defaults']['database_port'])) {
+            $configuration->setDefaultDatabasePort($config['defaults']['database_port']);
+        }
     }
 
     private function readFromEnv(Configuration $configuration)

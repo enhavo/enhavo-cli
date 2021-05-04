@@ -21,6 +21,26 @@ class FactoryTest extends TestCase
         $this->assertTrue($configuration->getSubtrees()[0]->isPushTag());
         $this->assertFalse($configuration->getSubtrees()[1]->isPushTag());
     }
+
+    public function testDefaults()
+    {
+        $factory = new TestFactory();
+        $factory->localFile = __DIR__.'/../fixtures/configuration/defaults.yml';
+
+        $configuration = $factory->create();
+
+        $this->assertEquals('peter@pan.com', $configuration->getDefaultUserEmail());
+        $this->assertEquals('w3ndy', $configuration->getDefaultUserPassword());
+        $this->assertEquals('root', $configuration->getDefaultDatabaseUser());
+        $this->assertEquals('root_password', $configuration->getDefaultDatabasePassword());
+        $this->assertEquals('localhost', $configuration->getDefaultDatabaseHost());
+        $this->assertEquals('3306', $configuration->getDefaultDatabasePort());
+
+        $this->assertEquals('APP_SECRET', $configuration->getDefaultEnv()[0]->getKey());
+        $this->assertEquals('s3cr3t', $configuration->getDefaultEnv()[0]->getValue());
+        $this->assertEquals('APP_ENV', $configuration->getDefaultEnv()[1]->getKey());
+        $this->assertEquals('dev', $configuration->getDefaultEnv()[1]->getValue());
+    }
 }
 
 

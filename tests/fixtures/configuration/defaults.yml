@@ -1,0 +1,11 @@
+defaults:
+  env:
+    APP_SECRET: s3cr3t
+    APP_ENV: dev
+  user_name: 'peter'
+  user_email: 'peter@pan.com'
+  user_password: 'w3ndy'
+  database_user: 'root'
+  database_password: 'root_password'
+  database_host: 'localhost'
+  database_port: '3306'
