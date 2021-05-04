@@ -87,6 +87,22 @@ class CreateUserTest extends TestCase
 
         $this->assertNull($instance->execute);
     }
+
+    public function testCreateUserWithNoDefaultPassword()
+    {
+        $dependencies = $this->createDependencies();
+        $dependencies->questionHelper->method('ask')->willReturn('y');
+        $dependencies->configuration->method('getDefaultUserEmail')->willReturn('peter@pan.com');
+        $dependencies->configuration->method('getDefaultUserPassword')->willReturn(null);
+
+        $instance = $this->createInstance($dependencies);
+        $instance();
+
+        $this->assertCount(3, $instance->execute);
+        $this->assertEquals($instance->execute[0], 'enhavo:user:create');
+        $this->assertEquals($instance->execute[1], 'peter@pan.com');
+        $this->assertEquals($instance->execute[2], '--super-admin');
+    }
 }
 
 class CreateUserTestDependencies

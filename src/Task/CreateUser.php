@@ -78,19 +78,24 @@ class CreateUser extends AbstractSubroutine
 
     private function createUser()
     {
+        $defaults = $this->useDefaults();
         if ($this->existsConsoleCommand('enhavo:user:create')) {
             $parameters = [];
-            if ($this->configuration->getDefaultUserEmail() && $this->configuration->getDefaultUserPassword() && $this->useDefaults()) {
+            if ($this->configuration->getDefaultUserEmail() && $defaults) {
                 $parameters[] = $this->configuration->getDefaultUserEmail();
+            }
+            if (count($parameters) === 1 && $this->configuration->getDefaultUserPassword() && $defaults) {
                 $parameters[] = $this->configuration->getDefaultUserPassword();
             }
             $parameters[] = '--super-admin';
             return $this->console(array_merge(['enhavo:user:create'], $parameters), $this->output);
         } else {
             $parameters = [];
-            if ($this->configuration->getDefaultUserEmail() && $this->configuration->getDefaultUserPassword() && $this->useDefaults()) {
+            if ($this->configuration->getDefaultUserEmail() && $this->useDefaults() && $defaults) {
                 $parameters[] = $this->configuration->getDefaultUserEmail();
                 $parameters[] = $this->configuration->getDefaultUserEmail();
+            }
+            if (count($parameters) === 2 && $this->configuration->getDefaultUserEmail() && $this->configuration->getDefaultUserPassword() && $defaults) {
                 $parameters[] = $this->configuration->getDefaultUserPassword();
             }
             $parameters[] = '--super-admin';
