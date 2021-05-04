@@ -2,24 +2,22 @@
 
 namespace Enhavo\Component\Cli\Command;
 
-use Enhavo\Component\Cli\Configuration\Factory;
-use Enhavo\Component\Cli\Subroutine\CreateUser;
+use Enhavo\Component\Cli\Subroutine\InstallElasticSearch;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CreateUserCommand extends Command
+class InstallElasticSearchCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setDescription('Create user for login')
+            ->setDescription('Install elastic search')
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $configuration = (new Factory())->create();
-        return (new CreateUser($input, $output, $this->getHelper('question'), $configuration))();
+        return (new InstallElasticSearch($input, $output, $this->getHelper('question')))();
     }
 }
