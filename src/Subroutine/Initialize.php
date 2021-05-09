@@ -6,6 +6,7 @@ use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\Configuration\Configuration;
 use Enhavo\Component\Cli\SubroutineInterface;
 use Enhavo\Component\Cli\Task\ComposerInstall;
+use Enhavo\Component\Cli\Task\CreateConfig;
 use Enhavo\Component\Cli\Task\CreateDatabase;
 use Enhavo\Component\Cli\Task\CreateEnv;
 use Enhavo\Component\Cli\Task\DoctrineFixtures;
@@ -34,6 +35,7 @@ class Initialize extends AbstractSubroutine implements SubroutineInterface
     {
         (new ComposerInstall( $this->input, $this->output, $this->questionHelper))();
         (new YarnInstall( $this->input, $this->output, $this->questionHelper))();
+        (new CreateConfig( $this->input, $this->output, $this->questionHelper))();
         (new CreateEnv( $this->input, $this->output, $this->questionHelper, $this->configuration))();
         (new CreateDatabase( $this->input, $this->output, $this->questionHelper))();
         (new ExecuteMigrations( $this->input, $this->output, $this->questionHelper))();
