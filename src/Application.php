@@ -2,9 +2,11 @@
 
 namespace Enhavo\Component\Cli;
 
+use Enhavo\Component\Cli\Command\CreateConfigCommand;
 use Enhavo\Component\Cli\Command\CreateProjectCommand;
 use Enhavo\Component\Cli\Command\CreateTestCommand;
 use Enhavo\Component\Cli\Command\CreateUserCommand;
+use Enhavo\Component\Cli\Command\EditConfigCommand;
 use Enhavo\Component\Cli\Command\InitializeCommand;
 use Enhavo\Component\Cli\Command\InstallElasticSearchCommand;
 use Enhavo\Component\Cli\Command\InteractiveCommand;
@@ -32,6 +34,8 @@ class Application
         //$this->application->add(new CreateProjectCommand('create'));
         //$this->application->add(new CreateTestCommand('create-test'));
         $this->application->add(new CreateUserCommand('create-user'));
+        $this->application->add(new CreateConfigCommand('create-config'));
+        $this->application->add(new EditConfigCommand('edit-config'));
         $this->application->add(new InitializeCommand('initialize'));
         //$this->application->add(new InstallElasticSearchCommand('install-elasticsearch'));
         $this->application->add(new InteractiveCommand('interactive'));
