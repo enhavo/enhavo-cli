@@ -34,6 +34,9 @@ class Configuration
     /** @var string|null */
     private $defaultUserPassword;
 
+    /** @var string[] */
+    private $mainRepositories = [];
+
     /**
      * @param Subtree $subtree
      */
@@ -192,5 +195,31 @@ class Configuration
     public function setDefaultUserPassword(?string $defaultUserPassword): void
     {
         $this->defaultUserPassword = $defaultUserPassword;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getMainRepositories(): array
+    {
+        return $this->mainRepositories;
+    }
+
+    /**
+     * @param string $mainRepository
+     */
+    public function addMainRepository(string $mainRepository)
+    {
+        $this->mainRepositories[] = $mainRepository;
+    }
+
+    /**
+     * @param string $mainRepository
+     */
+    public function removeMainRepository(string $mainRepository)
+    {
+        if (false !== $key = array_search($mainRepository, $this->mainRepositories, true)) {
+            array_splice($this->mainRepositories, $key, 1);
+        }
     }
 }

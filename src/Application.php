@@ -17,6 +17,7 @@ use Enhavo\Component\Cli\Command\RecreateDatabaseCommand;
 use Enhavo\Component\Cli\Command\ResetProjectCommand;
 use Enhavo\Component\Cli\Command\SelfUpdateCommand;
 use Enhavo\Component\Cli\Command\UpdateCommand;
+use Enhavo\Component\Cli\Command\VendorSymlinkCommand;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -46,6 +47,7 @@ class Application
         $this->application->add(new SelfUpdateCommand('self-update'));
         $this->application->add(new PushSubtreeCommand('push-subtree'));
         $this->application->add(new NpmReleaseCommand('npm-release'));
+        $this->application->add(new VendorSymlinkCommand('vendor-symlink'));
         $this->application->setDefaultCommand('interactive');
         return $this->application->run($input);
     }
