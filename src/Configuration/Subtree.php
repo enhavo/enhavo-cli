@@ -16,6 +16,9 @@ class Subtree
     /** @var bool */
     private $pushTag;
 
+    /** @var string|null */
+    private $package;
+
     /**
      * Subtree constructor.
      * @param string $name
@@ -23,12 +26,13 @@ class Subtree
      * @param string $prefix
      * @param bool $pushTag
      */
-    public function __construct(string $name, string $url, string $prefix, bool $pushTag = true)
+    public function __construct(string $name, string $url, string $prefix, string $package = null, bool $pushTag = true)
     {
         $this->name = $name;
         $this->url = $url;
         $this->prefix = $prefix;
         $this->pushTag = $pushTag;
+        $this->package = $package;
     }
 
     /**
@@ -61,5 +65,13 @@ class Subtree
     public function isPushTag(): bool
     {
         return $this->pushTag;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getPackage(): ?string
+    {
+        return $this->package;
     }
 }

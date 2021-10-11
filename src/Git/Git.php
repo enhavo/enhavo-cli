@@ -267,6 +267,16 @@ class Git
         $this->execute(["git", "branch", "-D", $branchId]);
     }
 
+    public function deleteRemoteTag(string $remote, string $tag)
+    {
+        $this->execute(["git", "push", $remote, sprintf(':%s', $tag)]);
+    }
+
+    public function deleteTag(string $tag)
+    {
+        $this->execute(["git", "tag", '-d', $tag]);
+    }
+
     public function addSubtree(string $remote, string $prefix, string $remoteBranch = 'main')
     {
         $this->execute(["git", "subtree", "add", "--prefix", $prefix, "--squash", sprintf('%s/%s', $remote, $remoteBranch)]);

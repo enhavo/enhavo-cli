@@ -47,14 +47,20 @@ class Factory
         return null;
     }
 
-    private function readFromFile(string $path, Configuration $configuration)
+    public function readFromFile(string $path, Configuration $configuration)
     {
         $content = file_get_contents($path);
         $config = Yaml::parse($content);
 
         if (isset($config['subtrees'])) {
             foreach($config['subtrees'] as $name => $subtree) {
-                $configuration->addSubtree(new Subtree($name, $subtree['url'], $subtree['prefix'], isset($subtree['push_tag']) ? $subtree['push_tag'] : true));
+                $configuration->addSubtree(new Subtree(
+                    $name,
+                    $subtree['url'],
+                    $subtree['prefix'],
+                    isset($subtree['package']) ? $subtree['package'] : null,
+                    isset($subtree['push_tag']) ? $subtree['push_tag'] : true
+                ));
             }
         }
 
@@ -94,6 +100,12 @@ class Factory
 
         if (isset($config['defaults']['database_port'])) {
             $configuration->setDefaultDatabasePort($config['defaults']['database_port']);
+        }
+
+        if (isset($config['mainRepositories'])) {
+            foreach ($config['mainRepositories'] as $repository) {
+                $configuration->addMainRepository($repository);
+            }
         }
     }
 
