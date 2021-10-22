@@ -61,7 +61,13 @@ class CreateEnv extends AbstractSubroutine
             }
         }
 
-        $this->writeFile($target, $values);
+        try {
+            $this->writeFile($target, $values);
+        } catch (\Exception $ex) {
+            return Command::FAILURE;
+        }
+
+        return Command::SUCCESS;
     }
 
     private function createDatabaseValue()

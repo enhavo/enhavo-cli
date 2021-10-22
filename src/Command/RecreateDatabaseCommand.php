@@ -2,6 +2,7 @@
 
 namespace Enhavo\Component\Cli\Command;
 
+use Enhavo\Component\Cli\Configuration\Factory;
 use Enhavo\Component\Cli\Subroutine\RecreateDatabase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +19,7 @@ class RecreateDatabaseCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        return (new RecreateDatabase($input, $output, $this->getHelper('question')))();
+        $configuration = (new Factory())->create();
+        return (new RecreateDatabase($input, $output, $this->getHelper('question'), $configuration))();
     }
 }

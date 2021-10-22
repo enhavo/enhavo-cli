@@ -3,13 +3,13 @@
 namespace Enhavo\Component\Cli\Task;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
-use Enhavo\Component\Cli\ExecuteTrait;
+use Enhavo\Component\Cli\BinConsoleTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\Question;
 
 class EnhavoInit extends AbstractSubroutine
 {
-    use ExecuteTrait;
+    use BinConsoleTrait;
 
     public function __invoke()
     {
@@ -20,7 +20,7 @@ class EnhavoInit extends AbstractSubroutine
             if (strtolower($option) === 'n') {
                 return Command::SUCCESS;
             } elseif (strtolower($option) === 'y') {
-                return $this->execute(['composer', 'install'], $this->output);
+                return $this->console(['enhavo:init'], $this->output);
             }
         }
     }
