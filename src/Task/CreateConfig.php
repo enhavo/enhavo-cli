@@ -105,7 +105,7 @@ class CreateConfig extends AbstractSubroutine
 
     protected function findEnv($key, ?Configuration $configuration)
     {
-        $env = $configuration ? $configuration->getDefaultEnv() : null;
+        $env = $configuration ? $configuration->getDefaultEnv() : [];
 
         foreach ($env as $item) {
             if ($item->getKey() === $key) {
