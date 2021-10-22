@@ -30,13 +30,13 @@ type one of the options: ');
             } elseif ($option == 'u') {
                 $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'r') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
+                $subroutine = new ResetProject($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'd') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
+                $subroutine = new RecreateDatabase($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'm') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
+                $subroutine = new Migrate($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'l') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
+                $subroutine = new CreateUser($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'c') {
                 $this->output->writeln('Abort');
                 return Command::SUCCESS;

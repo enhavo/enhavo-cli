@@ -8,7 +8,9 @@ use Enhavo\Component\Cli\SubroutineInterface;
 use Enhavo\Component\Cli\Task\CreateDatabase;
 use Enhavo\Component\Cli\Task\CreateEnv;
 use Enhavo\Component\Cli\Task\CreateMigrations;
+use Enhavo\Component\Cli\Task\DoctrineFixtures;
 use Enhavo\Component\Cli\Task\DropDatabase;
+use Enhavo\Component\Cli\Task\EnhavoInit;
 use Enhavo\Component\Cli\Task\ExecuteMigrations;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -31,6 +33,10 @@ class RecreateDatabase extends AbstractSubroutine implements SubroutineInterface
         (new CreateEnv( $this->input, $this->output, $this->questionHelper, $this->configuration))();
         (new DropDatabase($this->input, $this->output, $this->questionHelper))();
         (new CreateDatabase($this->input, $this->output, $this->questionHelper))();
+        (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
+        (new DoctrineFixtures($this->input, $this->output, $this->questionHelper))();
+        (new EnhavoInit($this->input, $this->output, $this->questionHelper))();
+        (new CreateUser($this->input, $this->output, $this->questionHelper, $this->configuration))();
 
         return Command::SUCCESS;
     }
