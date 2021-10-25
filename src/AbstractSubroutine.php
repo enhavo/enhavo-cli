@@ -41,12 +41,16 @@ abstract class AbstractSubroutine
     protected function askYesNo(InputInterface $input, OutputInterface $output, string $text, string $default)
     {
         $question = new Question(sprintf('%s [%s/%s](%s): ', $text, self::ANSWER_YES, self::ANSWER_NO, $default), $default);
-        return $this->isAlwaysUseDefault() ? $default : $this->questionHelper->ask($input, $output, $question);
+        return $this->isAlwaysUseDefault($input) ? $default : $this->questionHelper->ask($input, $output, $question);
     }
 
-    protected function isAlwaysUseDefault(): bool
+    protected function isAlwaysUseDefault(InputInterface $input): bool
     {
-        return $this->input->getOption('always-use-default') ?? false;
+        if ($input->hasOption('always-use-default')) {
+            return $input->getOption('always-use-default');
+        }
+
+        return false;
     }
 
     /**

@@ -20,7 +20,7 @@ class CreateConfig extends AbstractSubroutine
             if (!$this->allowOverwrite) {
                 return Command::SUCCESS;
             }
-            $option = $this->askYesNo($this->input, $this->output, 'file "~/.enhavo/config.yaml" exists, overwrite?', self::ANSWER_NO);
+            $option = $this->askYesNo($this->input, $this->output, 'file "~/.enhavo/config.yaml" exists, edit?', self::ANSWER_NO);
             if ($option !== self::ANSWER_YES) {
                 return Command::SUCCESS;
             }
