@@ -12,9 +12,7 @@ use Enhavo\Component\Cli\Task\ExecuteMigrations;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 class Migrate extends AbstractSubroutine implements SubroutineInterface
 {
@@ -29,7 +27,7 @@ class Migrate extends AbstractSubroutine implements SubroutineInterface
 
     public function __invoke(): int
     {
-        (new CreateEnv( $this->input, $this->output, $this->questionHelper, $this->configuration))();
+        (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
         $create = (new CreateMigrations($this->input, $this->output, $this->questionHelper))();
         $execute = (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
         if ($create === Command::SUCCESS && $execute === Command::SUCCESS) {

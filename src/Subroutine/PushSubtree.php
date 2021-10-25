@@ -45,16 +45,17 @@ class PushSubtree extends AbstractSubroutine
      * @param bool|null $yes
      */
     public function __construct(
-        InputInterface $input,
+        InputInterface  $input,
         OutputInterface $output,
-        QuestionHelper $questionHelper,
-        Configuration $configuration,
-        ?string $name,
-        ?bool $force,
-        ?string $branch,
-        ?string $tag,
-        ?bool $yes
-    ) {
+        QuestionHelper  $questionHelper,
+        Configuration   $configuration,
+        ?string         $name,
+        ?bool           $force,
+        ?string         $branch,
+        ?string         $tag,
+        ?bool           $yes
+    )
+    {
         parent::__construct($input, $output, $questionHelper);
         $this->configuration = $configuration;
         $this->name = $name;
@@ -112,12 +113,11 @@ class PushSubtree extends AbstractSubroutine
      * @param Subtree[] $subtrees
      * @param Git $git
      */
-    private function pushBranch(array $subtrees, Git $git)
+    private function pushTag(array $subtrees, Git $git)
     {
-        $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
         foreach ($subtrees as $subtree) {
-            $this->output->writeln(sprintf('Push branch "%s" to remote "%s"', $branch, $subtree->getName()));
-            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch, $this->force);
+            $this->output->writeln(sprintf('Push tag "%s" to remote "%s"', $this->tag, $subtree->getName()));
+            $git->pushSubtreeTag($subtree->getName(), $subtree->getPrefix(), $this->tag);
         }
     }
 
@@ -125,11 +125,12 @@ class PushSubtree extends AbstractSubroutine
      * @param Subtree[] $subtrees
      * @param Git $git
      */
-    private function pushTag(array $subtrees,  Git $git)
+    private function pushBranch(array $subtrees, Git $git)
     {
+        $branch = $this->branch !== null ? $this->branch : $git->getCurrentBranch();
         foreach ($subtrees as $subtree) {
-            $this->output->writeln(sprintf('Push tag "%s" to remote "%s"', $this->tag, $subtree->getName()));
-            $git->pushSubtreeTag($subtree->getName(), $subtree->getPrefix(), $this->tag);
+            $this->output->writeln(sprintf('Push branch "%s" to remote "%s"', $branch, $subtree->getName()));
+            $git->pushSubtreeBranch($subtree->getName(), $subtree->getPrefix(), $branch, $this->force);
         }
     }
 }

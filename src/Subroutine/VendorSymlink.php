@@ -83,6 +83,18 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
         }
     }
 
+    private function getMainRepositoryNames(): array
+    {
+        $names = [];
+
+        $mainRepositories = $this->configuration->getMainRepositories();
+        foreach ($mainRepositories as $name => $mainRepository) {
+            $names[] = $name;
+        }
+
+        return $names;
+    }
+
     private function findMainPackagePath()
     {
         $mainRepositories = $this->configuration->getMainRepositories();
@@ -101,17 +113,5 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
         }
 
         return null;
-    }
-
-    private function getMainRepositoryNames(): array
-    {
-        $names = [];
-
-        $mainRepositories = $this->configuration->getMainRepositories();
-        foreach ($mainRepositories as $name => $mainRepository) {
-            $names[] = $name;
-        }
-
-        return $names;
     }
 }

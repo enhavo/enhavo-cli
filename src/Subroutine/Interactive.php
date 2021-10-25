@@ -13,7 +13,7 @@ class Interactive extends AbstractSubroutine implements SubroutineInterface
     public function __invoke(): int
     {
         $subroutine = null;
-        while($subroutine === null) {
+        while ($subroutine === null) {
             $question = new Question('Choose a task:
 [i] initialize freshly installed project
 [u] update project after git pull
@@ -28,7 +28,7 @@ type one of the options: ');
             if ($option == 'i') {
                 $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'u') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
+                $subroutine = new Update($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'r') {
                 $subroutine = new ResetProject($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'd') {

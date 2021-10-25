@@ -7,7 +7,6 @@ use Enhavo\Component\Cli\Configuration\Configuration;
 use Enhavo\Component\Cli\SubroutineInterface;
 use Enhavo\Component\Cli\Task\CreateDatabase;
 use Enhavo\Component\Cli\Task\CreateEnv;
-use Enhavo\Component\Cli\Task\CreateMigrations;
 use Enhavo\Component\Cli\Task\DoctrineFixtures;
 use Enhavo\Component\Cli\Task\DropDatabase;
 use Enhavo\Component\Cli\Task\EnhavoInit;
@@ -30,7 +29,7 @@ class RecreateDatabase extends AbstractSubroutine implements SubroutineInterface
 
     public function __invoke(): int
     {
-        (new CreateEnv( $this->input, $this->output, $this->questionHelper, $this->configuration))();
+        (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
         (new DropDatabase($this->input, $this->output, $this->questionHelper))();
         (new CreateDatabase($this->input, $this->output, $this->questionHelper))();
         (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();

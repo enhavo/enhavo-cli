@@ -4,11 +4,13 @@ namespace Enhavo\Component\Cli\Subroutine;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\Configuration\Configuration;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+use function json_decode;
 
 class NpmRelease extends AbstractSubroutine
 {
@@ -77,7 +79,7 @@ class NpmRelease extends AbstractSubroutine
         }
 
         $version = str_replace('v', '', $this->version);
-        $packageJson = \json_decode(file_get_contents('package.json'), true);
+        $packageJson = json_decode(file_get_contents('package.json'), true);
         $packageJson['version'] = $version;
         file_put_contents('package.json', json_encode($packageJson, JSON_PRETTY_PRINT));
 
@@ -109,6 +111,6 @@ class NpmRelease extends AbstractSubroutine
             $output = $process->getOutput();
         }
 
-        throw new \Exception($output);
+        throw new Exception($output);
     }
 }

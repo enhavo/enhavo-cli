@@ -14,12 +14,11 @@ class YarnEncore extends AbstractSubroutine
     public function __invoke()
     {
         while(true) {
-            $question = new Question('webpack encore? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'webpack encore?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->execute(['yarn', 'encore', 'dev', '--progress'], $this->output);
             }
         }

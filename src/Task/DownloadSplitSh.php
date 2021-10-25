@@ -38,12 +38,12 @@ class DownloadSplitSh extends AbstractSubroutine
 
         while(true) {
             if (!$this->yes) {
-                $question = new Question(sprintf('install splitsh to "%s"? [y/n]', $path), 'y');
-                $option = $this->questionHelper->ask($this->input, $this->output, $question);
+                $question = new Question(sprintf('install splitsh to "%s"?', $path), self::ANSWER_YES);
+                $option = $this->askYesNo($this->input, $this->output, $question);
 
-                if (strtolower($option) === 'n') {
+                if (strtolower($option) === self::ANSWER_NO) {
                     return null;
-                } elseif (strtolower($option) === 'y') {
+                } elseif (strtolower($option) === self::ANSWER_YES) {
                     self::download($path, $overwrite);
                     return $path;
                 }

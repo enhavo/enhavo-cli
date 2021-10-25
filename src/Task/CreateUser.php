@@ -65,12 +65,11 @@ class CreateUser extends AbstractSubroutine
         }
 
         while(true) {
-            $question = new Question('create user? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'create user?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->createUser();
             }
         }
@@ -112,11 +111,10 @@ class CreateUser extends AbstractSubroutine
 
         if ($this->askDefault) {
             while(true) {
-                $question = new Question('use defaults? [y/n]', 'y');
-                $option = $this->questionHelper->ask($this->input, $this->output, $question);
-                if (strtolower($option) === 'n') {
+                $option = $this->askYesNo($this->input, $this->output, 'use defaults?', self::ANSWER_YES);
+                if (strtolower($option) === self::ANSWER_NO) {
                     return false;
-                } elseif (strtolower($option) === 'y') {
+                } elseif (strtolower($option) === self::ANSWER_YES) {
                     return true;
                 }
             }

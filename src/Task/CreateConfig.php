@@ -21,9 +21,8 @@ class CreateConfig extends AbstractSubroutine
             if (!$this->allowOverwrite) {
                 return Command::SUCCESS;
             }
-            $question = new Question('file "~/.enhavo/config.yml" exists, overwrite? [y/n]', 'n');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
-            if ($option !== 'y') {
+            $option = $this->askYesNo($this->input, $this->output, 'file "~/.enhavo/config.yml" exists, overwrite?', self::ANSWER_NO);
+            if ($option !== self::ANSWER_YES) {
                 return Command::SUCCESS;
             }
             $configuration = (new Factory())->create();
@@ -31,12 +30,11 @@ class CreateConfig extends AbstractSubroutine
         }
 
         while(true) {
-            $question = new Question('create config under "~/.enhavo/config.yml"? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'create config under "~/.enhavo/config.yml"?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->createConfigFile();
             }
         }
@@ -49,50 +47,50 @@ class CreateConfig extends AbstractSubroutine
         ];
 
         // user
-        if ($value = $this->ask('default user email %s?', $configuration?$configuration->getDefaultUserEmail():null)) {
+        if ($value = $this->askQuestion('default user email %s?', $configuration?$configuration->getDefaultUserEmail():null)) {
             $defaults['user_email'] = $value;
         }
 
-        if ($value = $this->ask('default user password %s?', $configuration?$configuration->getDefaultUserPassword():null)) {
+        if ($value = $this->askQuestion('default user password %s?', $configuration?$configuration->getDefaultUserPassword():null)) {
             $defaults['user_password'] = $value;
         }
 
         // database
-        if ($value = $this->ask('database user %s?', $configuration?$configuration->getDefaultDatabaseUser():'root')) {
+        if ($value = $this->askQuestion('database user %s?', $configuration?$configuration->getDefaultDatabaseUser():'root')) {
             $defaults['database_user'] = $value;
         }
 
-        if ($value = $this->ask('database password %s?', $configuration?$configuration->getDefaultDatabasePassword():'root')) {
+        if ($value = $this->askQuestion('database password %s?', $configuration?$configuration->getDefaultDatabasePassword():'root')) {
             $defaults['database_password'] = $value;
         }
 
-        if ($value = $this->ask('database host %s?', $configuration?$configuration->getDefaultDatabaseHost():'localhost')) {
+        if ($value = $this->askQuestion('database host %s?', $configuration?$configuration->getDefaultDatabaseHost():'localhost')) {
             $defaults['database_host'] = $value;
         }
 
-        if ($value = $this->ask('database port %s?', $configuration?$configuration->getDefaultDatabasePort():3306)) {
+        if ($value = $this->askQuestion('database port %s?', $configuration?$configuration->getDefaultDatabasePort():3306)) {
             $defaults['database_port'] = intval($value);
         }
 
         // mailer
-        if ($value = $this->ask('MAILER_URL %s?', $this->findEnv('MAILER_URL', $configuration))) {
+        if ($value = $this->askQuestion('MAILER_URL %s?', $this->findEnv('MAILER_URL', $configuration))) {
             $defaults['env']['MAILER_URL'] = $value;
         }
 
-        if ($value = $this->ask('MAILER_FROM %s?', $this->findEnv('MAILER_FROM', $configuration))) {
+        if ($value = $this->askQuestion('MAILER_FROM %s?', $this->findEnv('MAILER_FROM', $configuration))) {
             $defaults['env']['MAILER_FROM'] = $value;
         }
 
-        if ($value = $this->ask('MAILER_TO %s?', $this->findEnv('MAILER_TO', $configuration))) {
+        if ($value = $this->askQuestion('MAILER_TO %s?', $this->findEnv('MAILER_TO', $configuration))) {
             $defaults['env']['MAILER_TO'] = $value;
         }
 
-        if ($value = $this->ask('MAILER_DELIVERY_ADDRESS %s?', $this->findEnv('MAILER_DELIVERY_ADDRESS', $configuration)??$defaults['env']['MAILER_TO'])) {
+        if ($value = $this->askQuestion('MAILER_DELIVERY_ADDRESS %s?', $this->findEnv('MAILER_DELIVERY_ADDRESS', $configuration)??$defaults['env']['MAILER_TO'])) {
             $defaults['env']['MAILER_DELIVERY_ADDRESS'] = $value;
         }
 
         // env
-        if ($value = $this->ask('APP_ENV %s?', $this->findEnv('APP_ENV', $configuration)??'dev')) {
+        if ($value = $this->askQuestion('APP_ENV %s?', $this->findEnv('APP_ENV', $configuration)??'dev')) {
             $defaults['env']['APP_ENV'] = $value;
         }
 
@@ -134,7 +132,7 @@ class CreateConfig extends AbstractSubroutine
         return file_exists($path);
     }
 
-    private function ask($text, $default = null)
+    private function askQuestion($text, $default = null)
     {
         $defaultValueText = sprintf('(%s)', (string)$default);
 

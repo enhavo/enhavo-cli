@@ -22,7 +22,7 @@ class CreateUser extends AbstractSubroutine implements SubroutineInterface
 
     public function __invoke(): int
     {
-        $userTask = new \Enhavo\Component\Cli\Task\CreateUser( $this->input, $this->output, $this->questionHelper, $this->configuration);
+        $userTask = new \Enhavo\Component\Cli\Task\CreateUser($this->input, $this->output, $this->questionHelper, $this->configuration);
         $userTask->setAsk(false);
         return $userTask();
     }

@@ -14,12 +14,11 @@ class DoctrineForceUpdate extends AbstractSubroutine
     public function __invoke()
     {
         while(true) {
-            $question = new Question('do force-update? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'do force-update?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->console(['doctrine:schema:update', '--force'], $this->output);
             }
         }

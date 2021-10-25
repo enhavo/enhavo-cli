@@ -14,12 +14,11 @@ class DeleteEnvLocal extends AbstractSubroutine
     public function __invoke()
     {
         while(true) {
-            $question = new Question('delete .env.local? [y/n]', 'n');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'delete .env.local?', self::ANSWER_NO);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->execute(['rm', '.env.local'], $this->output);
             }
         }

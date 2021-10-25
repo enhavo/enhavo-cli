@@ -14,12 +14,11 @@ class EnhavoInit extends AbstractSubroutine
     public function __invoke()
     {
         while(true) {
-            $question = new Question('init enhavo? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'init enhavo?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->console(['enhavo:init'], $this->output);
             }
         }
