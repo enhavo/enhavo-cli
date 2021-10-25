@@ -43,6 +43,6 @@ abstract class AbstractSubroutine
 
     protected function isAlwaysUseDefault(): bool
     {
-        return $this->input->getOption('always-use-default');
+        return $this->input->getOption('always-use-default') ?? false;
     }
 }
