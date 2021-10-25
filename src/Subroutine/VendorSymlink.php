@@ -55,13 +55,13 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
 
         $mainRepositoryNames = $this->getMainRepositoryNames();
         if (count($mainRepositoryNames) === 0) {
-            $this->output->writeln(sprintf('No main repository was defined in enhavo configuration'));
+            $this->output->writeln(sprintf('No main repository defined in enhavo configuration'));
             return Command::FAILURE;
         }
 
         $mainPackagePath = $this->findMainPackagePath();
         if ($mainPackagePath === null) {
-            $this->output->writeln(sprintf('Package "%s" could not found in any main repositories: "%s"', $this->packageName, join(',', $mainRepositoryNames)));
+            $this->output->writeln(sprintf('Package "%s" could not be found in any main repositories: "%s"', $this->packageName, join(',', $mainRepositoryNames)));
             return Command::FAILURE;
         }
 
