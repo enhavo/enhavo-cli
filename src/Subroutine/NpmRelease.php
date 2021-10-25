@@ -64,7 +64,7 @@ class NpmRelease extends AbstractSubroutine
     private function checkConfig()
     {
         if ($this->configuration->getNpmToken() === null) {
-            $this->output->writeln('No npm token was set. Define it in your .enhavo.yml or set env var NPM_TOKEN');
+            $this->output->writeln('No npm token was set. Define it in your .enhavo.yaml or set env var NPM_TOKEN');
             return false;
         }
 

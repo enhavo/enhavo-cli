@@ -20,7 +20,7 @@ class CreateConfig extends AbstractSubroutine
             if (!$this->allowOverwrite) {
                 return Command::SUCCESS;
             }
-            $option = $this->askYesNo($this->input, $this->output, 'file "~/.enhavo/config.yml" exists, overwrite?', self::ANSWER_NO);
+            $option = $this->askYesNo($this->input, $this->output, 'file "~/.enhavo/config.yaml" exists, overwrite?', self::ANSWER_NO);
             if ($option !== self::ANSWER_YES) {
                 return Command::SUCCESS;
             }
@@ -29,7 +29,7 @@ class CreateConfig extends AbstractSubroutine
         }
 
         while(true) {
-            $option = $this->askYesNo($this->input, $this->output, 'create config under "~/.enhavo/config.yml"?', self::ANSWER_YES);
+            $option = $this->askYesNo($this->input, $this->output, 'create config under "~/.enhavo/config.yaml"?', self::ANSWER_YES);
 
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
@@ -117,7 +117,7 @@ class CreateConfig extends AbstractSubroutine
     {
         $home = getenv("HOME");
         $dir = sprintf("%s/.enhavo", realpath($home));
-        $path = sprintf("%s/config.yml", $dir);
+        $path = sprintf("%s/config.yaml", $dir);
         if (!file_exists($dir)) {
             mkdir($dir, 0777, true);
         }
@@ -127,7 +127,7 @@ class CreateConfig extends AbstractSubroutine
     protected function configExists()
     {
         $home = getenv("HOME");
-        $path = sprintf("%s/.enhavo/config.yml", realpath($home));
+        $path = sprintf("%s/.enhavo/config.yaml", realpath($home));
         return file_exists($path);
     }
 

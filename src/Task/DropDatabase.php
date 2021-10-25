@@ -18,7 +18,7 @@ class DropDatabase extends AbstractSubroutine
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
             } elseif (strtolower($option) === self::ANSWER_YES) {
-                return $this->console(['doctrine:database:drop'], $this->output);
+                return $this->console(['doctrine:database:drop', '--force'], $this->output);
             }
         }
     }

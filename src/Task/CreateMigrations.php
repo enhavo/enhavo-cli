@@ -18,7 +18,7 @@ class CreateMigrations extends AbstractSubroutine
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
             } elseif (strtolower($option) === self::ANSWER_YES) {
-                return $this->console(['doctrine:migrations:diff'], $this->output);
+                return $this->console(['doctrine:migrations:diff', '--no-interaction'], $this->output);
             }
         }
     }

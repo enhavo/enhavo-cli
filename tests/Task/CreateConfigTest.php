@@ -56,7 +56,7 @@ class CreateConfigTest extends TestCase
         $instance = $this->createInstance($dependencies);
         $instance();
 
-        $this->assertEquals($this->getConfigContent('expect-config.yml'), $instance->content);
+        $this->assertEquals($this->getConfigContent('expect-config.yaml'), $instance->content);
     }
 }
 
