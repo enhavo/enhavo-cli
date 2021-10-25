@@ -4,7 +4,6 @@ namespace Enhavo\Component\Cli\Task;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\Configuration\Configuration;
-use Enhavo\Component\Cli\Configuration\Env;
 use Enhavo\Component\Cli\Configuration\Factory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\Question;

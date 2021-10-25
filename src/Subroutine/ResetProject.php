@@ -18,11 +18,13 @@ class ResetProject extends AbstractSubroutine implements SubroutineInterface
     public function __invoke(): int
     {
         $configuration = (new Factory())->create();
+        // todo: add to clean-project-dir command?
         (new DeleteEnvLocal($this->input, $this->output, $this->questionHelper))();
         (new DeleteVendorDir($this->input, $this->output, $this->questionHelper))();
         (new DeleteNodeModulesDir($this->input, $this->output, $this->questionHelper))();
         (new DeleteVarCacheDir($this->input, $this->output, $this->questionHelper))();
         (new DeleteVarMediaDir($this->input, $this->output, $this->questionHelper))();
+        // todo: delete public/(build/bundles/js) directories?
         (new DropDatabase($this->input, $this->output, $this->questionHelper))();
 
         (new Initialize($this->input, $this->output, $this->questionHelper, $configuration))();

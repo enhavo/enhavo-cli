@@ -22,6 +22,9 @@ abstract class AbstractSubroutine
     /** @var QuestionHelper */
     protected $questionHelper;
 
+    /** @var ?string */
+    protected $defaultAnswer;
+
     /**
      * Interactive constructor.
      * @param InputInterface $input
@@ -45,4 +48,17 @@ abstract class AbstractSubroutine
     {
         return $this->input->getOption('always-use-default') ?? false;
     }
+
+    /**
+     * @param string|null $defaultAnswer
+     * @return $this
+     */
+    public function setDefaultAnswer(?string $defaultAnswer): AbstractSubroutine
+    {
+        $this->defaultAnswer = $defaultAnswer;
+
+        return $this;
+    }
+
+
 }

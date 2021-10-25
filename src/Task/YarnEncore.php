@@ -5,7 +5,6 @@ namespace Enhavo\Component\Cli\Task;
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\ExecuteTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Question\Question;
 
 class YarnEncore extends AbstractSubroutine
 {

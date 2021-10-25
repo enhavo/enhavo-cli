@@ -38,6 +38,7 @@ class Initialize extends AbstractSubroutine implements SubroutineInterface
         (new CreateConfig($this->input, $this->output, $this->questionHelper))();
         (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
         (new CreateDatabase($this->input, $this->output, $this->questionHelper))();
+        // todo: import database?
         (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
         (new DoctrineFixtures($this->input, $this->output, $this->questionHelper))();
         (new EnhavoInit($this->input, $this->output, $this->questionHelper))();

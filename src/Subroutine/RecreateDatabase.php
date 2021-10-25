@@ -30,7 +30,7 @@ class RecreateDatabase extends AbstractSubroutine implements SubroutineInterface
     public function __invoke(): int
     {
         (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
-        (new DropDatabase($this->input, $this->output, $this->questionHelper))();
+        (new DropDatabase($this->input, $this->output, $this->questionHelper))->setDefaultAnswer(self::ANSWER_YES)();
         (new CreateDatabase($this->input, $this->output, $this->questionHelper))();
         (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
         (new DoctrineFixtures($this->input, $this->output, $this->questionHelper))();
