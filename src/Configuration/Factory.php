@@ -102,8 +102,8 @@ class Factory
             $configuration->setDefaultDatabasePort($config['defaults']['database_port']);
         }
 
-        if (isset($config['mainRepositories'])) {
-            foreach ($config['mainRepositories'] as $repository) {
+        if (isset($config['main_repositories'])) {
+            foreach ($config['main_repositories'] as $repository) {
                 $configuration->addMainRepository($repository);
             }
         }
