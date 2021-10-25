@@ -10,7 +10,7 @@ class FactoryTest extends TestCase
     public function testSubtreesCreate()
     {
         $factory = new TestFactory();
-        $factory->localFile = __DIR__.'/../fixtures/configuration/subtrees.yml';
+        $factory->localFile = __DIR__.'/../fixtures/configuration/subtrees.yaml';
 
         $configuration = $factory->create();
 
@@ -25,7 +25,7 @@ class FactoryTest extends TestCase
     public function testDefaults()
     {
         $factory = new TestFactory();
-        $factory->localFile = __DIR__.'/../fixtures/configuration/defaults.yml';
+        $factory->localFile = __DIR__.'/../fixtures/configuration/defaults.yaml';
 
         $configuration = $factory->create();
 
