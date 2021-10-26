@@ -55,13 +55,13 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
 
         $mainRepositoryNames = $this->getMainRepositoryNames();
         if (count($mainRepositoryNames) === 0) {
-            $this->output->writeln(sprintf('No main repository was defined in enhavo configuration'));
+            $this->output->writeln(sprintf('No main repository defined in enhavo configuration'));
             return Command::FAILURE;
         }
 
         $mainPackagePath = $this->findMainPackagePath();
         if ($mainPackagePath === null) {
-            $this->output->writeln(sprintf('Package "%s" could not found in any main repositories: "%s"', $this->packageName, join(',', $mainRepositoryNames)));
+            $this->output->writeln(sprintf('Package "%s" could not be found in any main repositories: "%s"', $this->packageName, join(',', $mainRepositoryNames)));
             return Command::FAILURE;
         }
 
@@ -83,12 +83,24 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
         }
     }
 
+    private function getMainRepositoryNames(): array
+    {
+        $names = [];
+
+        $mainRepositories = $this->configuration->getMainRepositories();
+        foreach ($mainRepositories as $name => $mainRepository) {
+            $names[] = $name;
+        }
+
+        return $names;
+    }
+
     private function findMainPackagePath()
     {
         $mainRepositories = $this->configuration->getMainRepositories();
 
         foreach ($mainRepositories as $mainRepository) {
-            $configPath = sprintf('%s/.enhavo.yml', $mainRepository);
+            $configPath = sprintf('%s/.enhavo.yaml', $mainRepository);
             if ($this->fs->exists($configPath)) {
                 $configuration = new Configuration();
                 $this->factory->readFromFile($configPath, $configuration);
@@ -101,17 +113,5 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
         }
 
         return null;
-    }
-
-    private function getMainRepositoryNames(): array
-    {
-        $names = [];
-
-        $mainRepositories = $this->configuration->getMainRepositories();
-        foreach ($mainRepositories as $name => $mainRepository) {
-            $names[] = $name;
-        }
-
-        return $names;
     }
 }

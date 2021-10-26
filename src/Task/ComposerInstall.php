@@ -5,7 +5,6 @@ namespace Enhavo\Component\Cli\Task;
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\ExecuteTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Question\Question;
 
 class ComposerInstall extends AbstractSubroutine
 {
@@ -14,12 +13,11 @@ class ComposerInstall extends AbstractSubroutine
     public function __invoke()
     {
         while(true) {
-            $question = new Question('composer install? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'composer install?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
+            } elseif (strtolower($option) === self::ANSWER_YES) {
                 return $this->execute(['composer', 'install'], $this->output);
             }
         }

@@ -3,6 +3,7 @@
 CONFIG_DIR="$HOME/.enhavo-cli"
 RED='\033[1;31m'
 GREEN='\033[1;32m'
+CYAN='\033[1;36m'
 NC='\033[0m' # Default Color
 
 println-red() {
@@ -13,11 +14,9 @@ println-green() {
   printf "${GREEN}$1${NC}\n"
 }
 
-if [[ "$1" = "--self-update" ]]; then
-  sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo -O /usr/local/bin/enhavo && sudo chmod +x /usr/local/bin/enhavo
-  println-green "enhavo-cli updated"
-  exit 0
-fi
+println-cyan() {
+  printf "${CYAN}$1${NC}\n"
+}
 
 menu() {
   echo
@@ -29,7 +28,11 @@ menu() {
   echo '[m] create/execute migrations'
   echo '[l] create login'
   echo '[c] cancel'
-  read -p "type one of the options: " -n 1 -r
+  if [[ ! $PRESET_OPTION =~ ^[a-ZA-Z]$ ]]; then
+    read -p "type one of the options: " -n 1 -r
+  else
+    REPLY="$PRESET_OPTION"
+  fi
   echo
   echo
 
@@ -51,13 +54,18 @@ menu() {
   elif [[ $REPLY =~ ^[Rr]$ ]]; then
     instructions
     project-reset
-  else
+  elif [[ $REPLY =~ ^[Cc]$ ]]; then
     echo
+  else
+    println-red "unknown option \"$REPLY\"."
+    menu
+    return
   fi
   echo
 }
 
 instructions() {
+  println-cyan "chosen option is \"$REPLY\""
   println-green "the following routines will guide you through the setup.\nhit enter to execute defaults.\notherwise follow the instructions."
   println-red "you can always use CTRL+C to abort"
   echo
@@ -193,6 +201,7 @@ MAILER_DELIVERY_ADDRESS="$MAILER_DELIVERY_ADDRESS"
 MAILER_URL="$MAILER_URL"
 RED="$RED"
 GREEN="$GREEN"
+CYAN="$CYAN"
 NC='\033[0m' # Default Color
 EOF
     load-config $CONFIG_DIR/config
@@ -393,6 +402,15 @@ console-exists() {
   return 0
 }
 
+bash-exists() {
+  if ! command -v $1 &> /dev/null
+  then
+      return 0
+  fi
+
+  return 1
+}
+
 rm-vendor() {
   if [[ -d "./vendor" ]]; then
     read-yny "delete vendor directory?"
@@ -450,10 +468,44 @@ read-d() {
   println-green "value given for $2: $read_d"
 }
 
+self-update() {
+  bash-exists 'wget'
+  if [ $? -eq 1 ]; then
+    sudo wget https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo -O /usr/local/bin/enhavo
+  else
+    bash-exists 'curl'
+    if [ $? -eq 1 ]; then
+      sudo curl https://raw.githubusercontent.com/enhavo/enhavo-cli/master/enhavo --output /usr/local/bin/enhavo
+    else
+      println-red "unable to update because neither wget nor curl is installed."
+      println-red "use:"
+      println-cyan "sudo apt install wget"
+      println-red "or:"
+      println-cyan "sudo apt install curl"
+      println-red "to enable --self-update"
+      exit 1
+    fi
+  fi
+
+  sudo chmod +x /usr/local/bin/enhavo
+
+  println-green "enhavo-cli updated"
+  exit 0
+}
+
 goodbye() {
   println-green "i'm done. good bye."
   echo
 }
+
+
+if [[ "$1" = "--self-update" ]]; then
+  self-update
+
+elif [[ "$1" =~ ^[a-zA-Z]$ ]]; then
+  PRESET_OPTION="$1"
+  println-cyan "preset option is: \"$PRESET_OPTION\""
+fi
 
 load-config $CONFIG_DIR/config
 check-config

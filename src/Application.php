@@ -3,12 +3,9 @@
 namespace Enhavo\Component\Cli;
 
 use Enhavo\Component\Cli\Command\CreateConfigCommand;
-use Enhavo\Component\Cli\Command\CreateProjectCommand;
-use Enhavo\Component\Cli\Command\CreateTestCommand;
 use Enhavo\Component\Cli\Command\CreateUserCommand;
 use Enhavo\Component\Cli\Command\EditConfigCommand;
 use Enhavo\Component\Cli\Command\InitializeCommand;
-use Enhavo\Component\Cli\Command\InstallElasticSearchCommand;
 use Enhavo\Component\Cli\Command\InteractiveCommand;
 use Enhavo\Component\Cli\Command\MigrateCommand;
 use Enhavo\Component\Cli\Command\NpmReleaseCommand;

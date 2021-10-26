@@ -2,6 +2,7 @@
 
 namespace Enhavo\Component\Cli\Command;
 
+use Enhavo\Component\Cli\Configuration\Factory;
 use Enhavo\Component\Cli\Subroutine\Migrate;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +19,7 @@ class MigrateCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        return (new Migrate($input, $output, $this->getHelper('question')))();
+        $configuration = (new Factory())->create();
+        return (new Migrate($input, $output, $this->getHelper('question'), $configuration))();
     }
 }

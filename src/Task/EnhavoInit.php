@@ -3,24 +3,22 @@
 namespace Enhavo\Component\Cli\Task;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
-use Enhavo\Component\Cli\ExecuteTrait;
+use Enhavo\Component\Cli\BinConsoleTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Question\Question;
 
 class EnhavoInit extends AbstractSubroutine
 {
-    use ExecuteTrait;
+    use BinConsoleTrait;
 
     public function __invoke()
     {
         while(true) {
-            $question = new Question('init enhavo? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'init enhavo?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
-                return $this->execute(['composer', 'install'], $this->output);
+            } elseif (strtolower($option) === self::ANSWER_YES) {
+                return $this->console(['enhavo:init'], $this->output);
             }
         }
     }

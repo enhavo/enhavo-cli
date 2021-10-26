@@ -5,7 +5,6 @@ namespace Enhavo\Component\Cli\Task;
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\BinConsoleTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Question\Question;
 
 class ExecuteMigrations extends AbstractSubroutine
 {
@@ -14,13 +13,12 @@ class ExecuteMigrations extends AbstractSubroutine
     public function __invoke()
     {
         while(true) {
-            $question = new Question('execute migrations? [y/n]', 'y');
-            $option = $this->questionHelper->ask($this->input, $this->output, $question);
+            $option = $this->askYesNo($this->input, $this->output, 'execute migrations?', self::ANSWER_YES);
 
-            if (strtolower($option) === 'n') {
+            if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
-            } elseif (strtolower($option) === 'y') {
-                return $this->console(['doctrine:migrations:migrate'], $this->output);
+            } elseif (strtolower($option) === self::ANSWER_YES) {
+                return $this->console(['doctrine:migrations:migrate', '--no-interaction'], $this->output);
             }
         }
     }

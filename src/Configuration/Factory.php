@@ -28,7 +28,7 @@ class Factory
     protected function findGlobalConfigFile()
     {
         $home = getenv('HOME');
-        $configFile = sprintf('%s/.enhavo/config.yml', $home);
+        $configFile = sprintf('%s/.enhavo/config.yaml', $home);
         if (file_exists($configFile)) {
             return $configFile;
         }
@@ -40,7 +40,7 @@ class Factory
         if (getcwd() === false) {
             return null;
         }
-        $configFile = sprintf('%s/.enhavo.yml', getcwd());
+        $configFile = sprintf('%s/.enhavo.yaml', getcwd());
         if (file_exists($configFile)) {
             return $configFile;
         }
@@ -102,8 +102,8 @@ class Factory
             $configuration->setDefaultDatabasePort($config['defaults']['database_port']);
         }
 
-        if (isset($config['mainRepositories'])) {
-            foreach ($config['mainRepositories'] as $repository) {
+        if (isset($config['main_repositories'])) {
+            foreach ($config['main_repositories'] as $repository) {
                 $configuration->addMainRepository($repository);
             }
         }

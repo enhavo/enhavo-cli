@@ -3,6 +3,7 @@
 namespace Enhavo\Component\Cli\Subroutine;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
+use Enhavo\Component\Cli\Configuration\Factory;
 use Enhavo\Component\Cli\SubroutineInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\Question;
@@ -12,7 +13,7 @@ class Interactive extends AbstractSubroutine implements SubroutineInterface
     public function __invoke(): int
     {
         $subroutine = null;
-        while($subroutine === null) {
+        while ($subroutine === null) {
             $question = new Question('Choose a task:
 [i] initialize freshly installed project
 [u] update project after git pull
@@ -23,19 +24,19 @@ class Interactive extends AbstractSubroutine implements SubroutineInterface
 [c] cancel
 type one of the options: ');
             $option = $this->questionHelper->ask($this->input, $this->output, $question);
-
+            $configuration = (new Factory())->create();
             if ($option == 'i') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper);
+                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'u') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper);
+                $subroutine = new Update($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'r') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper);
+                $subroutine = new ResetProject($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'd') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper);
+                $subroutine = new RecreateDatabase($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'm') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper);
+                $subroutine = new Migrate($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'l') {
-                $subroutine = new Initialize($this->input, $this->output, $this->questionHelper);
+                $subroutine = new CreateUser($this->input, $this->output, $this->questionHelper, $configuration);
             } elseif ($option == 'c') {
                 $this->output->writeln('Abort');
                 return Command::SUCCESS;

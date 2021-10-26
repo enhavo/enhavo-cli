@@ -33,17 +33,18 @@ class Initialize extends AbstractSubroutine implements SubroutineInterface
 
     public function __invoke(): int
     {
-        (new ComposerInstall( $this->input, $this->output, $this->questionHelper))();
-        (new YarnInstall( $this->input, $this->output, $this->questionHelper))();
-        (new CreateConfig( $this->input, $this->output, $this->questionHelper))();
-        (new CreateEnv( $this->input, $this->output, $this->questionHelper, $this->configuration))();
-        (new CreateDatabase( $this->input, $this->output, $this->questionHelper))();
-        (new ExecuteMigrations( $this->input, $this->output, $this->questionHelper))();
-        (new DoctrineFixtures( $this->input, $this->output, $this->questionHelper))();
-        (new EnhavoInit( $this->input, $this->output, $this->questionHelper))();
-        (new \Enhavo\Component\Cli\Task\CreateUser( $this->input, $this->output, $this->questionHelper, $this->configuration))();
-        (new YarnEncore( $this->input, $this->output, $this->questionHelper))();
-        (new DumpRoutes( $this->input, $this->output, $this->questionHelper))();
+        (new ComposerInstall($this->input, $this->output, $this->questionHelper))();
+        (new YarnInstall($this->input, $this->output, $this->questionHelper))();
+        (new CreateConfig($this->input, $this->output, $this->questionHelper))();
+        (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
+        (new CreateDatabase($this->input, $this->output, $this->questionHelper))();
+        // todo: import database?
+        (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
+        (new DoctrineFixtures($this->input, $this->output, $this->questionHelper))();
+        (new EnhavoInit($this->input, $this->output, $this->questionHelper))();
+        (new CreateUser($this->input, $this->output, $this->questionHelper, $this->configuration))();
+        (new YarnEncore($this->input, $this->output, $this->questionHelper))();
+        (new DumpRoutes($this->input, $this->output, $this->questionHelper))();
 
         return Command::SUCCESS;
     }
