@@ -32,6 +32,10 @@ class Factory
         if (file_exists($configFile)) {
             return $configFile;
         }
+        $configFile = sprintf('%s/.enhavo/config.yml', $home);
+        if (file_exists($configFile)) {
+            return $configFile;
+        }
         return null;
     }
 
@@ -41,6 +45,10 @@ class Factory
             return null;
         }
         $configFile = sprintf('%s/.enhavo.yaml', getcwd());
+        if (file_exists($configFile)) {
+            return $configFile;
+        }
+        $configFile = sprintf('%s/.enhavo.yml', getcwd());
         if (file_exists($configFile)) {
             return $configFile;
         }

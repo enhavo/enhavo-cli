@@ -101,6 +101,10 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
 
         foreach ($mainRepositories as $mainRepository) {
             $configPath = sprintf('%s/.enhavo.yaml', $mainRepository);
+            if(!$this->fs->exists($configPath)) {
+                $configPath = sprintf('%s/.enhavo.yml', $mainRepository);
+            }
+
             if ($this->fs->exists($configPath)) {
                 $configuration = new Configuration();
                 $this->factory->readFromFile($configPath, $configuration);

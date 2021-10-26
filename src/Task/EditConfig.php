@@ -12,7 +12,10 @@ class EditConfig extends AbstractSubroutine
     public function __invoke()
     {
         $home = getenv("HOME");
-        $path = sprintf("%s/.enhavo/config.yaml", realpath($home));
+        $path = sprintf("%s/.enhavo/config.yml", realpath($home));
+        if (file_exists($path)) {
+            $path = sprintf("%s/.enhavo/config.yaml", realpath($home));
+        }
         return $this->execute(['vim', $path], $this->output);
     }
 }
