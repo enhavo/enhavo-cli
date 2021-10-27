@@ -42,7 +42,7 @@ class Initialize extends AbstractSubroutine implements SubroutineInterface
         (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
         (new DoctrineFixtures($this->input, $this->output, $this->questionHelper))();
         (new EnhavoInit($this->input, $this->output, $this->questionHelper))();
-        (new CreateUser($this->input, $this->output, $this->questionHelper, $this->configuration))();
+        (new \Enhavo\Component\Cli\Task\CreateUser($this->input, $this->output, $this->questionHelper, $this->configuration))();
         (new YarnEncore($this->input, $this->output, $this->questionHelper))();
         (new DumpRoutes($this->input, $this->output, $this->questionHelper))();
 
