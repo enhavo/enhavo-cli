@@ -10,8 +10,14 @@ class CreateDatabase extends AbstractSubroutine
 {
     use BinConsoleTrait;
 
+    const COMMAND = 'doctrine:database:create';
+
     public function __invoke()
     {
+        if (!$this->existsConsoleCommand(self::COMMAND)) {
+            return Command::SUCCESS;
+        }
+
         while(true) {
             $option = $this->askYesNo($this->input, $this->output, 'create database?', $this->defaultAnswer??self::ANSWER_YES);
 

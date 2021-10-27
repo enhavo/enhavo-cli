@@ -86,8 +86,10 @@ class CreateUser extends AbstractSubroutine
                 $parameters[] = $this->configuration->getDefaultUserPassword();
             }
             $parameters[] = '--super-admin';
+
             return $this->console(array_merge(['enhavo:user:create'], $parameters), $this->output);
-        } else {
+
+        } else if ($this->existsConsoleCommand('fos:user:create')) {
             $parameters = [];
             if ($this->configuration->getDefaultUserEmail() && $this->useDefaults() && $defaults) {
                 $parameters[] = $this->configuration->getDefaultUserEmail();

@@ -10,15 +10,21 @@ class ExecuteMigrations extends AbstractSubroutine
 {
     use BinConsoleTrait;
 
+    const COMMAND = 'doctrine:migrations:migrate';
+
     public function __invoke()
     {
+        if (!$this->existsConsoleCommand(self::COMMAND)) {
+            return Command::SUCCESS;
+        }
+
         while(true) {
             $option = $this->askYesNo($this->input, $this->output, 'execute migrations?', self::ANSWER_YES);
 
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
             } elseif (strtolower($option) === self::ANSWER_YES) {
-                return $this->console(['doctrine:migrations:migrate', '--no-interaction'], $this->output);
+                return $this->console([self::COMMAND, '--no-interaction'], $this->output);
             }
         }
     }
