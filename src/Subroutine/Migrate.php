@@ -28,10 +28,10 @@ class Migrate extends AbstractSubroutine implements SubroutineInterface
     public function __invoke(): int
     {
         (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
-        $create = (new CreateMigrations($this->input, $this->output, $this->questionHelper))();
+        (new CreateMigrations($this->input, $this->output, $this->questionHelper))();
         $execute = (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
-        if ($create === Command::SUCCESS && $execute === Command::SUCCESS) {
-            (new DoctrineForceUpdate($this->input, $this->output, $this->questionHelper))();
+        if ($execute !== Command::SUCCESS) {
+            (new DoctrineForceUpdate($this->input, $this->output, $this->questionHelper))->setDefaultAnswer(self::ANSWER_NO);
         }
 
         return Command::SUCCESS;
