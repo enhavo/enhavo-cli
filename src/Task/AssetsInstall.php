@@ -10,15 +10,21 @@ class AssetsInstall extends AbstractSubroutine
 {
     use BinConsoleTrait;
 
+    const COMMAND = 'assets:install';
+
     public function __invoke()
     {
+        if (!$this->existsConsoleCommand(self::COMMAND)) {
+            return Command::SUCCESS;
+        }
+
         while(true) {
             $option = $this->askYesNo($this->input, $this->output, 'install assets?', self::ANSWER_YES);
 
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
             } elseif (strtolower($option) === self::ANSWER_YES) {
-                return $this->console(['assets:install'], $this->output);
+                return $this->console([self::COMMAND], $this->output);
             }
         }
     }
