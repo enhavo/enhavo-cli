@@ -19,7 +19,7 @@ class DoctrineForceUpdate extends AbstractSubroutine
         }
 
         while(true) {
-            $option = $this->askYesNo($this->input, $this->output, 'do force-update?', self::ANSWER_YES);
+            $option = $this->askYesNo($this->input, $this->output, 'do force-update?', $this->defaultAnswer??self::ANSWER_YES);
 
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
