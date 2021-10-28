@@ -27,7 +27,7 @@ Update
 Once installed you can update enhavo-cli like so:
 
 ```bash
-enhavo --self-update
+sudo enhavo self-update
 ```
 
 Get started
