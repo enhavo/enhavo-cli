@@ -40,6 +40,10 @@ trait BinConsoleTrait
         $process->run();
 
         $output = $process->getOutput();
+        $errorOutput = $process->getErrorOutput();
+        if ($process->getExitCode() !== 0) {
+            throw new \Exception(sprintf('bin/console is not working due to: %s', $errorOutput));
+        }
 
         return strpos($output, $command) !== false;
     }
