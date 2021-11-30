@@ -27,6 +27,7 @@ class Migrate extends AbstractSubroutine implements SubroutineInterface
 
     public function __invoke(): int
     {
+        (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
         (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
         (new CreateMigrations($this->input, $this->output, $this->questionHelper))();
         $execute = (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
