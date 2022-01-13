@@ -17,7 +17,7 @@ trait BinConsoleTrait
         } elseif (file_exists(sprintf('%/app/console', $cwd))) {
             return sprintf('%/app/console', $cwd);
         } else {
-            throw new \RuntimeException('Can\'t find any symfony console command. Make shure enhavo-cli is executed within a symfony project folder.');
+            throw new \RuntimeException('Can\'t find any symfony console command. Make sure enhavo-cli is executed within a symfony project folder.');
         }
     }
 
