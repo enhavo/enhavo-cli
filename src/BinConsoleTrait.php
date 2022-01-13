@@ -14,7 +14,7 @@ trait BinConsoleTrait
         $cwd = getcwd();
         if (file_exists(sprintf('%/bin/console', $cwd))) {
             return sprintf('%/bin/console', $cwd);
-        } elseif (file_exists('%/app/console', $cwd)) {
+        } elseif (file_exists(sprintf('%/app/console', $cwd))) {
             return sprintf('%/app/console', $cwd);
         } else {
             throw new \RuntimeException('Can\'t find any symfony console command. Make shure enhavo-cli is executed within a symfony project folder.');
