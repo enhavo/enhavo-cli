@@ -11,12 +11,13 @@ trait BinConsoleTrait
 
     private function getConsolePath()
     {
-        if (file_exists(sprintf('%/bin/console', getcwd()))) {
-            return sprintf('%/bin/console', getcwd());
-        } elseif (sprintf('%/app/console', getcwd())) {
-            return sprintf('%/bin/console', getcwd());
+        $cwd = getcwd();
+        if (file_exists(sprintf('%s/bin/console', $cwd))) {
+            return sprintf('%s/bin/console', $cwd);
+        } elseif (file_exists(sprintf('%s/app/console', $cwd))) {
+            return sprintf('%s/app/console', $cwd);
         } else {
-            throw new \RuntimeException('Can\'t find any symfony console command. Execute enhavo-cli inside your project');
+            throw new \RuntimeException('Can\'t find any symfony console command. Make sure enhavo-cli is executed within a symfony project folder.');
         }
     }
 
