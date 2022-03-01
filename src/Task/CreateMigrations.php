@@ -19,7 +19,7 @@ class CreateMigrations extends AbstractSubroutine
         }
 
         while(true) {
-            $option = $this->askYesNo($this->input, $this->output, 'create migrations?', self::ANSWER_YES);
+            $option = $this->askYesNo($this->input, $this->output, 'create migrations?', $this->defaultAnswer??self::ANSWER_YES);
 
             if (strtolower($option) === self::ANSWER_NO) {
                 return Command::SUCCESS;
