@@ -2,6 +2,7 @@
 
 namespace Enhavo\Component\Cli;
 
+use Enhavo\Component\Cli\Exception\CommandFailException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -38,6 +39,14 @@ trait BinConsoleTrait
 
         $process = new Process([$path]);
         $process->run();
+
+        if (!$process->isSuccessful()) {
+            $errorOutput = $process->getErrorOutput();
+            if (empty($errorOutput)) {
+                $errorOutput = $process->getOutput();
+            }
+            throw new CommandFailException($errorOutput);
+        }
 
         $output = $process->getOutput();
         $errorOutput = $process->getErrorOutput();

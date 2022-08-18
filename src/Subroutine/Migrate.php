@@ -4,6 +4,7 @@ namespace Enhavo\Component\Cli\Subroutine;
 
 use Enhavo\Component\Cli\AbstractSubroutine;
 use Enhavo\Component\Cli\Configuration\Configuration;
+use Enhavo\Component\Cli\Exception\CommandFailException;
 use Enhavo\Component\Cli\SubroutineInterface;
 use Enhavo\Component\Cli\Task\CreateEnv;
 use Enhavo\Component\Cli\Task\CreateMigrations;
@@ -27,14 +28,19 @@ class Migrate extends AbstractSubroutine implements SubroutineInterface
 
     public function __invoke(): int
     {
-        (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
-        (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
-        (new CreateMigrations($this->input, $this->output, $this->questionHelper))();
-        $execute = (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
-        if ($execute !== Command::SUCCESS) {
-            (new DoctrineForceUpdate($this->input, $this->output, $this->questionHelper))->setDefaultAnswer(self::ANSWER_NO);
+        try {
+            (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
+            (new CreateEnv($this->input, $this->output, $this->questionHelper, $this->configuration))();
+            (new CreateMigrations($this->input, $this->output, $this->questionHelper))();
+            $execute = (new ExecuteMigrations($this->input, $this->output, $this->questionHelper))();
+            if ($execute !== Command::SUCCESS) {
+                (new DoctrineForceUpdate($this->input, $this->output, $this->questionHelper))->setDefaultAnswer(self::ANSWER_NO);
+            }
+            return Command::SUCCESS;
+        } catch(CommandFailException $exception) {
+            $this->output->writeln(sprintf('An error occured'));
+            $this->output->writeln(sprintf('<error>%s</error>', $exception->getMessage()));
+            return Command::FAILURE;
         }
-
-        return Command::SUCCESS;
     }
 }
