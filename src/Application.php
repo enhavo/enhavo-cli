@@ -46,6 +46,7 @@ class Application
         $this->application->add(new NpmReleaseCommand('npm-release'));
         $this->application->add(new VendorSymlinkCommand('vendor-symlink'));
         $this->application->setDefaultCommand('interactive');
+
         return $this->application->run($input);
     }
 }
