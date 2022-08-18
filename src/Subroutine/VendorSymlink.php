@@ -76,8 +76,11 @@ class VendorSymlink extends AbstractSubroutine implements SubroutineInterface
     private function checkPackage()
     {
         $path = sprintf('%s/vendor/%s', getcwd(), $this->packageName);
+        $nodePath = sprintf('%s/node_modules/%s', getcwd(), $this->packageName);
         if ($this->fs->exists($path)) {
             return $path;
+        } elseif($this->fs->exists($nodePath)) {
+            return $nodePath;
         } else {
             return false;
         }
