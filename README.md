@@ -48,7 +48,7 @@ Here is an example file
 defaults:
   env: # define all your env vars that should used in your .env.local
     APP_ENV: dev
-    MAILER_URL: smtp://user:password@host.tld
+    MAILER_DSN: smtp://user:password@host.tld
     MAILER_FROM: "no-reply@host.tld"
     MAILER_TO: "me@host.tld"
     MAILER_NAME: "enhavo"
