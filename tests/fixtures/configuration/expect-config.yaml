@@ -1,6 +1,6 @@
 defaults:
     env:
-        MAILER_URL: 'mailer:something'
+        MAILER_DSN: 'mailer:something'
         MAILER_FROM: no-reply@pan.com
         MAILER_TO: info@pan.com
         MAILER_DELIVERY_ADDRESS: dev@pan.com
