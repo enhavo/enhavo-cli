@@ -72,8 +72,8 @@ class CreateConfig extends AbstractSubroutine
         }
 
         // mailer
-        if ($value = $this->askQuestion('MAILER_URL %s?', $this->findEnv('MAILER_URL', $configuration))) {
-            $defaults['env']['MAILER_URL'] = $value;
+        if ($value = $this->askQuestion('MAILER_DSN %s?', $this->findEnv('MAILER_DSN', $configuration))) {
+            $defaults['env']['MAILER_DSN'] = $value;
         }
 
         if ($value = $this->askQuestion('MAILER_FROM %s?', $this->findEnv('MAILER_FROM', $configuration))) {
@@ -92,7 +92,10 @@ class CreateConfig extends AbstractSubroutine
         if ($value = $this->askQuestion('APP_ENV %s?', $this->findEnv('APP_ENV', $configuration)??'dev')) {
             $defaults['env']['APP_ENV'] = $value;
         }
-
+        // debug
+        if ($value = $this->askQuestion('APP_ENV %s?', false)) {
+            $defaults['env']['APP_DEBUG'] = $value;
+        }
         $content = Yaml::dump(['defaults' => $defaults], 3, 4);
 
         $this->writeFile($content);
