@@ -20,7 +20,7 @@ class YarnBundler extends AbstractSubroutine
         if (getcwd() === false) {
             return false;
         }
-        $configFile = sprintf('%s/node_modules/@vitejs', getcwd());
-        return file_exists($configFile);
+        $path = sprintf('%s/node_modules/@vitejs', getcwd());
+        return file_exists($path);
     }
 }
