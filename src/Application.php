@@ -13,6 +13,7 @@ use Enhavo\Component\Cli\Command\PushSubtreeCommand;
 use Enhavo\Component\Cli\Command\RecreateDatabaseCommand;
 use Enhavo\Component\Cli\Command\ResetProjectCommand;
 use Enhavo\Component\Cli\Command\SelfUpdateCommand;
+use Enhavo\Component\Cli\Command\ShowConfigCommand;
 use Enhavo\Component\Cli\Command\UpdateCommand;
 use Enhavo\Component\Cli\Command\VendorSymlinkCommand;
 use Symfony\Component\Console\Application as BaseApplication;
@@ -33,6 +34,7 @@ class Application
         //$this->application->add(new CreateTestCommand('create-test'));
         $this->application->add(new CreateUserCommand('create-user'));
         $this->application->add(new CreateConfigCommand('create-config'));
+        $this->application->add(new ShowConfigCommand('show-config'));
         $this->application->add(new EditConfigCommand('edit-config'));
         $this->application->add(new InitializeCommand('initialize'));
         //$this->application->add(new InstallElasticSearchCommand('install-elasticsearch'));

@@ -32,7 +32,7 @@ class Factory
         if (file_exists($configFile)) {
             return $configFile;
         }
-        $configFile = sprintf('%s/.enhavo/config.yml', $home);
+        $configFile = sprintf('%s/.enhavo/config.yaml', $home);
         if (file_exists($configFile)) {
             return $configFile;
         }
