@@ -12,7 +12,7 @@ class DumpRoutes extends AbstractSubroutine
 
     public function __invoke()
     {
-        while(true) {
+        while($this->isFosRouting()) {
             $option = $this->askYesNo($this->input, $this->output, 'dump routes?', self::ANSWER_YES);
 
             if (strtolower($option) === self::ANSWER_NO) {
@@ -21,5 +21,14 @@ class DumpRoutes extends AbstractSubroutine
                 return $this->execute(['yarn', 'routes:dump'], $this->output);
             }
         }
+    }
+
+    private function isFosRouting(): bool
+    {
+        if (getcwd() === false) {
+            return false;
+        }
+        $path = sprintf('%s/vendor/friendsofsymfony/jsrouting-bundle', getcwd());
+        return file_exists($path);
     }
 }
