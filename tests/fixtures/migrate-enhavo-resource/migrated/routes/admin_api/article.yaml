@@ -1,0 +1,62 @@
+app_admin_api_article_index:
+    path: /article/index
+    methods:
+        - GET
+    defaults:
+        _expose: admin_api
+        _endpoint:
+            type: resource_index
+            grid: app.article
+
+app_admin_api_article_list:
+    path: /article/list
+    methods:
+        - GET
+        - POST
+    defaults:
+        _expose: admin_api
+        _endpoint:
+            type: resource_list
+            grid: app.article
+
+app_admin_api_article_create:
+    path: /article/create
+    methods:
+        - GET
+        - POST
+    defaults:
+        _expose: admin_api
+        _endpoint:
+            type: resource_create
+            input: app.article
+
+app_admin_api_article_update:
+    path: '/article/update/{id}'
+    methods:
+        - GET
+        - POST
+    defaults:
+        _expose: admin_api
+        _endpoint:
+            type: resource_update
+            input: app.article
+
+app_admin_api_article_delete:
+    path: '/article/delete/{id}'
+    methods:
+        - DELETE
+    defaults:
+        _expose: admin_api
+        _endpoint:
+            type: resource_delete
+            input: app.article
+
+app_admin_api_article_batch:
+    path: /article/batch
+    methods:
+        - POST
+    defaults:
+        _expose: admin_api
+        _endpoint:
+            type: resource_batch
+            grid: app.article

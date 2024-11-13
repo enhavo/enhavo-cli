@@ -1,0 +1,9 @@
+sylius_resource:
+    resources:
+        app.article:
+            classes:
+                model: App\Entity\Article
+                repository: App\Repository\ArticleRepository
+                factory: App\Factory\ArticleFactory
+                controller: App\Controller\ArticleController
+                form: App\Form\Type\ArticleType

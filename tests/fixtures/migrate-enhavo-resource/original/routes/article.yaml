@@ -1,0 +1,121 @@
+app_article_index:
+    options:
+        expose: true
+    path: /app/article/index
+    defaults:
+        _controller: app.controller.article:indexAction
+        _sylius:
+            viewer:
+
+app_article_create:
+    options:
+        expose: true
+    path: /app/article/create
+    defaults:
+        _controller: app.controller.article:createAction
+        _sylius:
+            factory:
+                method: createWithSomething
+            viewer:
+                tabs:
+                    main:
+                        label: Article
+                        template: admin/article/tab/article.html.twig
+                    content:
+                        label: Content
+                        template: admin/article/tab/content.html.twig
+                        full_width: true
+                actions:
+                    preview:
+                        type: preview
+                        route: app_article_preview
+
+app_article_update:
+    path: /app/article/update/{id}
+    defaults:
+        _controller: app.controller.article:updateAction
+        _sylius:
+            serialization_groups: ['form']
+            viewer:
+                tabs:
+                    main:
+                        label: Article
+                        template: admin/article/tab/article.html.twig
+                    content:
+                        label: Content
+                        template: admin/article/tab/content.html.twig
+                        full_width: true
+                actions:
+                    preview:
+                        type: preview
+                        route: app_article_preview
+                    duplicate:
+                        type: duplicate
+                        route: app_article_duplicate
+
+app_article_table:
+    options:
+        expose: true
+    path: /app/article/table
+    defaults:
+        _controller: app.controller.article:tableAction
+        _sylius:
+            paginate: 50
+            sorting:
+                createdAt: desc
+            criteria:
+                locale: expr:get_locale()
+            filters:
+                title:
+                    type: text
+                    label: Titel
+                    property: title
+            viewer:
+                columns:
+                    title:
+                        type: text
+                        label: Titel
+                        property: title
+                        width: 5
+
+app_article_delete:
+    options:
+        expose: true
+    path: /app/article/delete/{id}
+    defaults:
+        _controller: app.controller.article:deleteAction
+
+app_article_batch:
+    options:
+        expose: true
+    path: /app/article/batch
+    defaults:
+        _controller: app.controller.article:batchAction
+        _sylius:
+            paginate: false
+            criteria:
+                id: $ids
+            batches:
+                delete:
+                    type: delete
+
+app_article_preview:
+    options:
+        expose: true
+    path: /app/article/preview
+    defaults:
+        _controller: app.controller.article:previewAction
+        _sylius:
+            viewer:
+
+app_article_resource_preview:
+    options:
+        expose: true
+    path: /app/article/resource/preview
+    defaults:
+        _controller: app.controller.article:previewResourceAction
+        preview: true
+        _sylius:
+            viewer:
+                strategy_options:
+                    service: 'App\Controller\ArticleController:showResource'

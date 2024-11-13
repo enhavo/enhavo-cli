@@ -1,0 +1,49 @@
+enhavo_resource:
+    resources:
+        app.article:
+            classes:
+                model: App\Entity\Article
+                factory: App\Factory\ArticleFactory
+                repository: App\Repository\ArticleRepository
+    grids:
+        app.article:
+            extends: enhavo_resource.grid
+            resource: app.article
+            actions: {  }
+            filters:
+                title:
+                    type: text
+                    label: Titel
+                    property: title
+            columns:
+                title:
+                    type: text
+                    label: Titel
+                    property: title
+                    width: 5
+            batches:
+                delete:
+                    type: delete
+    inputs:
+        app.article:
+            extends: enhavo_resource.input
+            resource: app.article
+            form: App\Form\Type\ArticleType
+            form_options: {  }
+            actions:
+                preview:
+                    type: preview
+                    route: app_article_preview
+            tabs:
+                main:
+                    label: Article
+                    type: form
+                    arrangement:
+                        - title
+                        - teaser
+                        - image
+                content:
+                    label: Content
+                    type: form
+                    arrangement:
+                        - content

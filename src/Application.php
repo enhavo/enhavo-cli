@@ -5,6 +5,7 @@ namespace Enhavo\Component\Cli;
 use Enhavo\Component\Cli\Command\CreateConfigCommand;
 use Enhavo\Component\Cli\Command\CreateUserCommand;
 use Enhavo\Component\Cli\Command\EditConfigCommand;
+use Enhavo\Component\Cli\Command\MigrateEnhavoResourceCommand;
 use Enhavo\Component\Cli\Command\InitializeCommand;
 use Enhavo\Component\Cli\Command\InteractiveCommand;
 use Enhavo\Component\Cli\Command\MigrateCommand;
@@ -33,6 +34,7 @@ class Application
         //$this->application->add(new CreateProjectCommand('create'));
         //$this->application->add(new CreateTestCommand('create-test'));
         $this->application->add(new CreateUserCommand('create-user'));
+        $this->application->add(new MigrateEnhavoResourceCommand('migrate-enhavo-resource'));
         $this->application->add(new CreateConfigCommand('create-config'));
         $this->application->add(new ShowConfigCommand('show-config'));
         $this->application->add(new EditConfigCommand('edit-config'));
