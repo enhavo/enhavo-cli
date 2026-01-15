@@ -12,6 +12,7 @@ class MigrateEnhavoResource extends AbstractSubroutine
     private $routes = [];
     private $templateDir = null;
     private $cwd = null;
+    private $force = false;
 
 
     public function __invoke($cwd)
@@ -20,6 +21,7 @@ class MigrateEnhavoResource extends AbstractSubroutine
         $resourceFilePath = $this->input->getArgument('resource_file');
         $routesDirPath = $this->input->getArgument('routes_dir');
         $this->templateDir = $this->input->getArgument('template_dir');
+        $this->force = $this->input->getOption('force');
 
         $resourceFilePath = strpos($resourceFilePath, '/') === 0 ? $resourceFilePath : $this->cwd.'/'.$resourceFilePath;
         $routesDirPath = strpos($routesDirPath, '/') === 0 ? $routesDirPath : $this->cwd.'/'.$routesDirPath;
@@ -102,15 +104,19 @@ class MigrateEnhavoResource extends AbstractSubroutine
         $tableRoute = $this->getRoute($resourceName, 'table');
         $dataRoute = $this->getRoute($resourceName, 'data');
         $batchRoute = $this->getRoute($resourceName, 'batch');
+        $autoComplete = $this->getRoute($resourceName, 'auto_complete');
 
         $gridActions = $indexRoute ? $this->getGridActions($indexRoute) : [];
         $createActions = $createRoute ? $this->getCreateActions($createRoute) : [];
+        $collection = $tableRoute || $dataRoute ? $this->getCollection($tableRoute ?? $dataRoute) : [];
         $columns = $tableRoute || $dataRoute ? $this->getColumns($tableRoute ?? $dataRoute) : [];
         $filters = $tableRoute || $dataRoute ? $this->getFilters($tableRoute ?? $dataRoute) : [];
         $batches = $batchRoute ? $this->getBatches($batchRoute) : [];
         $tabs = $createRoute ? $this->getTabs($createRoute, $errors) : [];
         $form = $createRoute ? $this->getForm($createRoute, $resourceConfig) : $resourceConfig['classes']['form'];
         $formOptions = $createRoute ? $this->getFormOptions($createRoute) : [];
+        $factoryMethod = $createRoute ? $this->getFactoryMethod($createRoute) : [];
+        $factoryArguments = $createRoute ? $this->getFactoryArguments($createRoute) : [];
 
         $config = $this->getResourceConfig(
             $resourceName,
@@ -123,24 +129,29 @@ class MigrateEnhavoResource extends AbstractSubroutine
             $formOptions,
             $filters,
             $batches,
-            $dataRoute
+            $dataRoute,
+            $collection,
+            $factoryMethod,
+            $factoryArguments,
         );
 
         $newResourceFilePath = $this->getNewResourceFilePath($resourceName);
-        if (!file_exists($newResourceFilePath)) {
+        if (!file_exists($newResourceFilePath) || $this->force) {
             $content = Yaml::dump($config, 8);
             file_put_contents($newResourceFilePath, $content);
+            $this->output->writeln(sprintf('<comment>Write:</comment> %s', $newResourceFilePath));
         }
 
-        $apiRoutes = $this->getApiRoutesConfig($resourceName, false, false);
+        $apiRoutes = $this->getApiRoutesConfig($resourceName, false, false, $autoComplete);
         $apiRoutesContent = [];
         $newAdminApiRouteFilePath = $this->getNewAdminApiRouteFilePath($resourceName);
         foreach ($apiRoutes as $key => $apiRoute) {
             $apiRoutesContent[] = Yaml::dump([$key => $apiRoute], 8);
         }
 
-        if (count($apiRoutesContent) && !file_exists($newAdminApiRouteFilePath)) {
+        if (count($apiRoutesContent) && (!file_exists($newAdminApiRouteFilePath) || $this->force)) {
             file_put_contents($newAdminApiRouteFilePath, implode("\n", $apiRoutesContent));
+            $this->output->writeln(sprintf('<comment>Write:</comment> %s', $newAdminApiRouteFilePath));
         }
 
         $adminRoutes = $this->getAdminRoutesConfig($resourceName, false);
@@ -150,8 +161,9 @@ class MigrateEnhavoResource extends AbstractSubroutine
             $adminRoutesContent[] = Yaml::dump([$key => $adminRoute], 8);
         }
 
-        if (count($apiRoutesContent) && !file_exists($newAdminRouteFilePath)) {
+        if (count($apiRoutesContent) && (!file_exists($newAdminRouteFilePath) || $this->force)) {
             file_put_contents($newAdminRouteFilePath, implode("\n", $adminRoutesContent));
+            $this->output->writeln(sprintf('<comment>Write:</comment> %s', $newAdminRouteFilePath));
         }
 
         if (!$indexRoute) {
@@ -210,10 +222,44 @@ class MigrateEnhavoResource extends AbstractSubroutine
     {
         $defaults = $route['defaults'] ?? [];
         if (isset($defaults['_sylius']['viewer']['columns'])) {
-            return $defaults['_sylius']['viewer']['columns'];
+            $columns = [];
+            foreach ($defaults['_sylius']['viewer']['columns'] as $key => $column) {
+                if (isset($column['condition'])) {
+                    $column['visible_condition'] = $column['condition'];
+                    unset($column['condition']);
+                }
+
+                if ($column['type'] === 'property') {
+                    $column['type'] = 'text';
+                }
+
+                if ($column['type'] === 'status') {
+                    $column['type'] = 'state';
+                    $column['property'] = $key;
+                }
+
+                $columns[$key] = $column;
+            }
+
+            return $columns;
         }
 
         return [];
+    }
+
+    private function getCollection($route)
+    {
+        $defaults = $route['defaults'] ?? [];
+        $collection = [];
+        if (isset($defaults['_sylius']['criteria'])) {
+            $collection['criteria'] = $defaults['_sylius']['criteria'];
+        }
+
+        if (isset($defaults['_sylius']['sorting'])) {
+            $collection['sorting'] = $defaults['_sylius']['sorting'];
+        }
+
+        return $collection;
     }
 
     private function getFilters($route)
@@ -252,7 +298,7 @@ class MigrateEnhavoResource extends AbstractSubroutine
                         $content = file_get_contents($path);
                         $lines = explode("\n", $content);
                         foreach ($lines as $line) {
-                            if (preg_match('/form_[a-z]+\(form.([a-z0-9]+)\)/', $line, $matches)) {
+                            if (preg_match('/form_[a-z]+\(form.([a-zA-Z0-9_]+)\)/', $line, $matches)) {
                                 $arrangement[] = $matches[1];
                             }
                         }
@@ -293,6 +339,26 @@ class MigrateEnhavoResource extends AbstractSubroutine
         return [];
     }
 
+    private function getFactoryMethod($route)
+    {
+        $defaults = $route['defaults'] ?? [];
+        if (isset($defaults['_sylius']['factory']['method'])) {
+            return $defaults['_sylius']['factory']['method'];
+        }
+
+        return [];
+    }
+
+    private function getFactoryArguments($route)
+    {
+        $defaults = $route['defaults'] ?? [];
+        if (isset($defaults['_sylius']['factory']['arguments'])) {
+            return $defaults['_sylius']['factory']['arguments'];
+        }
+
+        return [];
+    }
+
     private function checkDifferentCreateUpdateTabs($createRoute, $updateRoute)
     {
         return false;
@@ -309,7 +375,10 @@ class MigrateEnhavoResource extends AbstractSubroutine
         $formOptions,
         $filters,
         $batches,
-        $listRoute
+        $listRoute,
+        $collection,
+        $factoryMethod,
+        $factoryArguments
     )
     {
         $classes = [];
@@ -318,7 +387,7 @@ class MigrateEnhavoResource extends AbstractSubroutine
         }
 
         if (isset($resourceConfig['classes']['factory'])) {
-            $classes['factory'] =$resourceConfig['classes']['factory'];
+            $classes['factory'] = $resourceConfig['classes']['factory'];
         }
 
         if (isset($resourceConfig['classes']['repository'])) {
@@ -336,6 +405,7 @@ class MigrateEnhavoResource extends AbstractSubroutine
                     $resourceName => [
                         'extends' => 'enhavo_resource.grid',
                         'resource' => $resourceName,
+                        'collection' => $collection,
                         'actions' => $gridActions,
                         'filters' => $filters,
                         'columns' => $columns,
@@ -354,6 +424,14 @@ class MigrateEnhavoResource extends AbstractSubroutine
                 ],
             ],
         ];
+
+        if ($factoryMethod) {
+            $data['enhavo_resource']['inputs'][$resourceName]['factory_method'] = $factoryMethod;
+        }
+
+        if ($factoryArguments) {
+            $data['enhavo_resource']['inputs'][$resourceName]['factory_arguments'] = $factoryArguments;
+        }
 
         if ($listRoute) {
             $data['enhavo_resource']['grids'][$resourceName]['collection'] = [
@@ -380,7 +458,7 @@ class MigrateEnhavoResource extends AbstractSubroutine
         return $data;
     }
 
-    private function getApiRoutesConfig($resourceName, $duplicate, $preview)
+    private function getApiRoutesConfig($resourceName, $duplicate, $preview, $autoComplete)
     {
         $split = explode('.', $resourceName);
         $company = strtolower($split[0]);
@@ -489,6 +567,43 @@ class MigrateEnhavoResource extends AbstractSubroutine
                             'preview' => true,
                         ]
                     ]
+                ],
+            ];
+        }
+
+
+        if ($autoComplete) {
+            $endpointConfig = [
+                'type' => 'auto_complete',
+                'resource' => $resourceName,
+                'repository_method' => $autoComplete['defaults']['_config']['repository']['method'] ?? 'findByTerm',
+                'choice_label' => $autoComplete['defaults']['_config']['choice_label'] ?? null,
+            ];
+
+            if (isset($autoComplete['defaults']['_config']['repository']['arguments'])) {
+                $arguments = [];
+                foreach ($autoComplete['defaults']['_config']['repository']['arguments'] as $argument) {
+                    if ($argument === 'expr:configuration.getSearchTerm()') {
+                        $arguments[] = 'expr:request.get("q")';
+                    } else if ($argument === 'expr:configuration.getLimit()') {
+                        $arguments[] = 'expr:options.limit';
+                    } else {
+                        $arguments[] = $argument;
+                    }
+                }
+                $endpointConfig['repository_arguments'] = $arguments;
+            }
+
+            if (isset($autoComplete['defaults']['_config']['limit'])) {
+                $endpointConfig['limit'] = $autoComplete['defaults']['_config']['limit'];
+            }
+
+            $routes[$company . '_admin_api_' . $resource . '_auto_complete'] = [
+                'path' => '/' . $resource . '/auto-complete',
+                'methods' => ['GET'],
+                'defaults' => [
+                    '_expose' => 'admin_api',
+                    '_endpoint' => $endpointConfig
                 ],
             ];
         }

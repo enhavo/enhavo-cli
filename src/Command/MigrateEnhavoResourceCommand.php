@@ -6,6 +6,7 @@ use Enhavo\Component\Cli\Task\MigrateEnhavoResource;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateEnhavoResourceCommand extends Command
@@ -17,6 +18,7 @@ class MigrateEnhavoResourceCommand extends Command
             ->addArgument('resource_file', InputArgument::REQUIRED, 'Path to resource file')
             ->addArgument('routes_dir', InputArgument::REQUIRED,  'Path to routes directory')
             ->addArgument('template_dir', InputArgument::OPTIONAL,  'Path to template directory')
+            ->addOption('force', 'f', InputOption::VALUE_NONE,  'Force overwrite files')
         ;
     }
 
